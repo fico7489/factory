@@ -4,6 +4,7 @@ namespace App\Entity\Order;
 
 use App\Entity\Adjustment\Adjustment;
 use App\Entity\Order;
+use App\Entity\Order\Price\PriceItem;
 use App\Entity\Product;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,23 +20,29 @@ class OrderItem
     #[ORM\Column(type: 'integer')]
     private int $quantity;
 
-    #[ORM\Column(type: 'float')]
-    private float $price;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $price = null;
 
-    #[ORM\Column(type: 'float')]
-    private float $priceAdjusted;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $priceAdjusted = null;
 
-    #[ORM\Column(type: 'float')]
-    private float $discount;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $subtotal = null;
 
-    #[ORM\Column(type: 'float')]
-    private float $tax;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $discountGlobal = null;
 
-    #[ORM\Column(type: 'float')]
-    private float $total;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $discountItem = null;
 
-    #[ORM\OneToOne(targetEntity: ProductPriceUser::class)]
-    private ProductPriceUser $productPriceUser;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $tax = null;
+
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $total = null;
+
+    #[ORM\OneToOne(targetEntity: PriceItem::class)]
+    private PriceItem $productPriceUser;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderItems')]
     private Order $order;
@@ -51,6 +58,11 @@ class OrderItem
         return $this->id;
     }
 
+    public function getDiscount(): ?float
+    {
+        return $this->getDiscountItem() + $this->getDiscountGlobal();
+    }
+
     public function getQuantity(): int
     {
         return $this->quantity;
@@ -61,54 +73,74 @@ class OrderItem
         $this->quantity = $quantity;
     }
 
-    public function getPrice(): float
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(float $price): void
+    public function setPrice(?float $price): void
     {
         $this->price = $price;
     }
 
-    public function getPriceAdjusted(): float
+    public function getPriceAdjusted(): ?float
     {
         return $this->priceAdjusted;
     }
 
-    public function setPriceAdjusted(float $priceAdjusted): void
+    public function setPriceAdjusted(?float $priceAdjusted): void
     {
         $this->priceAdjusted = $priceAdjusted;
     }
 
-    public function getDiscount(): float
+    public function getSubtotal(): ?float
     {
-        return $this->discount;
+        return $this->subtotal;
     }
 
-    public function setDiscount(float $discount): void
+    public function setSubtotal(?float $subtotal): void
     {
-        $this->discount = $discount;
+        $this->subtotal = $subtotal;
     }
 
-    public function getTax(): float
+    public function getDiscountGlobal(): ?float
+    {
+        return $this->discountGlobal;
+    }
+
+    public function setDiscountGlobal(?float $discountGlobal): void
+    {
+        $this->discountGlobal = $discountGlobal;
+    }
+
+    public function getTax(): ?float
     {
         return $this->tax;
     }
 
-    public function setTax(float $tax): void
+    public function setTax(?float $tax): void
     {
         $this->tax = $tax;
     }
 
-    public function getTotal(): float
+    public function getTotal(): ?float
     {
         return $this->total;
     }
 
-    public function setTotal(float $total): void
+    public function setTotal(?float $total): void
     {
         $this->total = $total;
+    }
+
+    public function getProductPriceUser(): PriceItem
+    {
+        return $this->productPriceUser;
+    }
+
+    public function setProductPriceUser(PriceItem $productPriceUser): void
+    {
+        $this->productPriceUser = $productPriceUser;
     }
 
     public function getOrder(): Order
@@ -141,13 +173,13 @@ class OrderItem
         $this->adjustments = $adjustments;
     }
 
-    public function getProductPriceUser(): ProductPriceUser
+    public function getDiscountItem(): ?float
     {
-        return $this->productPriceUser;
+        return $this->discountItem;
     }
 
-    public function setProductPriceUser(ProductPriceUser $productPriceUser): void
+    public function setDiscountItem(?float $discountItem): void
     {
-        $this->productPriceUser = $productPriceUser;
+        $this->discountItem = $discountItem;
     }
 }

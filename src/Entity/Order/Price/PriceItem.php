@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Entity\Order;
+namespace App\Entity\Order\Price;
 
+use App\Entity\Order\OrderItem;
 use App\Entity\Product\ContractList;
 use App\Entity\Product\PriceList;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class ProductPriceUser
+class PriceItem
 {
     public const TYPE_PRODUCT = 'product';
     public const TYPE_PRICE_LIST = 'price_list';

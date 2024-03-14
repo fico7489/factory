@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Order\OrderItem;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +35,12 @@ class Product
 
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'product')]
     private Collection $orderItems;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+        $this->orderItems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {

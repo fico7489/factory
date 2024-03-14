@@ -6,19 +6,15 @@ use App\Entity\Order;
 use App\Entity\Order\OrderItem;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Service\OrderAdjustment\OrderItemApplicator;
+use App\Service\OrderApplicator;
 use App\Tests\TestCase;
 
-class OrderItemApplicatorTest extends TestCase
+class OrderApplicatorTest extends TestCase
 {
     public function testService(): void
     {
-        /** @var OrderItemApplicator $orderItemApplicator */
-        $orderItemApplicator = $this->container->get(OrderItemApplicator::class);
-        $order = new Order();
-        $this->entityManager->persist($order);
-        $this->entityManager->flush();
-
+        /** @var OrderApplicator $orderApplicator */
+        $orderApplicator = $this->container->get(OrderApplicator::class);
 
         $user = new User();
         $user->setEmail('test@example.com');
@@ -39,9 +35,15 @@ class OrderItemApplicatorTest extends TestCase
         $this->entityManager->flush();
 
         $orderItem = new OrderItem();
+        $orderItem->setQuantity(2);
         $orderItem->setProduct($product);
         $orderItem->setOrder($order);
-        $orderItemApplicator->apply($orderItem);
+
+        $this->entityManager->persist($orderItem);
+        $this->entityManager->flush();
+
+        $this->entityManager->refresh($order);
+        $orderApplicator->apply($order);
 
         $this->assertEquals(1, 1);
     }

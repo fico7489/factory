@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Order\ProductPriceUser;
+use App\Entity\Order\Price\PriceItem;
 use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,30 +15,30 @@ class ProductPriceUserFetcher
     }
 
     // gimme price of product for given user
-    public function fetch(User $user, Product $product): ProductPriceUser
+    public function fetch(User $user, Product $product): PriceItem
     {
         $sku = $product->getSku();
 
         // add default product price
         $orderItemPrices = [
-            new ProductPriceUser(price: $product->getPrice(), type: ProductPriceUser::TYPE_PRODUCT),
+            new PriceItem(price: $product->getPrice(), type: PriceItem::TYPE_PRODUCT),
         ];
 
         // add price by contract_list
         $contractList = $this->entityManager->getRepository(Product\ContractList::class)->findOneBy(['user' => $user, 'sku' => $sku]);
         if ($contractList) {
-            $orderItemPrices[] = new ProductPriceUser(price: $contractList->getPrice(), type: ProductPriceUser::TYPE_CONTRACT_LIST, contractList: $contractList);
+            $orderItemPrices[] = new PriceItem(price: $contractList->getPrice(), type: PriceItem::TYPE_CONTRACT_LIST, contractList: $contractList);
         }
 
         // add prices by price_list and user_groups
         $priceLists = $this->entityManager->getRepository(Product\PriceList::class)->findBy(['userGroup' => $user->getUserGroups()->toArray(), 'sku' => $sku]);
         foreach ($priceLists as $priceList) {
-            $orderItemPrices[] = new ProductPriceUser(price: $priceList->getPrice(), type: ProductPriceUser::TYPE_PRICE_LIST, priceList: $priceList);
+            $orderItemPrices[] = new PriceItem(price: $priceList->getPrice(), type: PriceItem::TYPE_PRICE_LIST, priceList: $priceList);
         }
 
         usort($orderItemPrices, function ($a, $b) {
-            /* @var ProductPriceUser $a */
-            /* @var ProductPriceUser $b */
+            /* @var PriceItem $a */
+            /* @var PriceItem $b */
 
             return $a->getPrice() > $b->getPrice() ? 1 : -1;
         });
