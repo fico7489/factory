@@ -1,5 +1,6 @@
 services:
     _defaults:
+        public: true
         autowire: true
         autoconfigure: true
 
@@ -8,7 +9,6 @@ services:
         exclude:
             - '../src/Entity/'
             - '../src/Kernel.php'
-
 
 
 

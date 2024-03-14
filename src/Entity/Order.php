@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Adjustment\Adjustment;
+use App\Entity\Order\OrderItem;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,13 +29,4 @@ class Order
         return $this->id;
     }
 
-    public function getOrderItems(): Collection
-    {
-        return $this->orderItems;
-    }
-
-    public function setOrderItems(Collection $orderItems): void
-    {
-        $this->orderItems = $orderItems;
-    }
 }

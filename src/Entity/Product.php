@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Order\OrderItem;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,7 +17,7 @@ class Product
     #[ORM\Column(type: 'string')]
     private ?string $name = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
     #[ORM\Column(type: 'float')]

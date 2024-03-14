@@ -3,7 +3,6 @@
 namespace App\Service\OrderAdjustment;
 
 use App\Entity\Order;
-use App\Service\OrderItemApplicator;
 
 class OrderApplicator
 {

@@ -4,6 +4,8 @@ namespace App\Command;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\User;
+use App\Entity\UserGroup;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
@@ -12,7 +14,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -34,6 +35,10 @@ class SeedCommand extends Command
         $application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
         $application->run(new ArrayInput(['command' => 'doctrine:migrations:migrate', '-n' => true]));
 
+        $this->prepareUserGroups();
+        $this->prepareUsers();
+        $this->prepareContractList();
+        $this->preparePriceList();
         $this->prepareCategories();
         $this->prepareProducts();
 
@@ -50,11 +55,111 @@ class SeedCommand extends Command
 
         $this->entityManager->flush();*/
 
-
         return Command::SUCCESS;
     }
 
-    private function prepareCategories():void
+    private function prepareUserGroups(): void
+    {
+        $userGroup = new UserGroup();
+        $userGroup->setName('Repairman');
+        $this->entityManager->persist($userGroup);
+
+        $userGroup = new UserGroup();
+        $userGroup->setName('Gold');
+        $this->entityManager->persist($userGroup);
+
+        $this->entityManager->flush();
+    }
+
+    private function prepareUsers(): void
+    {
+        $userGroupRepairman = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Repairman']);
+        $userGroupGold = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Gold']);
+
+        $userAdmin = new User();
+        $userAdmin->setEmail('admin@example.com');
+        $userAdmin->setFirstName('admin');
+        $userAdmin->setLastName('admin');
+        $userAdmin->setPassword('secret');
+        $userAdmin->setUserGroups(new ArrayCollection([]));
+        $this->entityManager->persist($userAdmin);
+
+        $userRegular = new User();
+        $userRegular->setEmail('regular@example.com');
+        $userRegular->setFirstName('regular');
+        $userRegular->setLastName('regular');
+        $userRegular->setPassword('secret');
+        $userRegular->setUserGroups(new ArrayCollection([]));
+        $this->entityManager->persist($userRegular);
+
+        $userRepairman = new User();
+        $userRepairman->setEmail('repairman@example.com');
+        $userRepairman->setFirstName('repairman');
+        $userRepairman->setLastName('repairman');
+        $userRepairman->setPassword('secret');
+        $userRepairman->setUserGroups(new ArrayCollection([$userGroupRepairman]));
+        $this->entityManager->persist($userRepairman);
+
+        $userGold = new User();
+        $userGold->setEmail('gold@example.com');
+        $userGold->setFirstName('gold');
+        $userGold->setLastName('gold');
+        $userGold->setPassword('secret');
+        $userGold->setUserGroups(new ArrayCollection([$userGroupGold]));
+        $this->entityManager->persist($userGold);
+
+        $userGoldAndRepairman = new User();
+        $userGoldAndRepairman->setEmail('gold_and_repairman@example.com');
+        $userGoldAndRepairman->setFirstName('gold_and_repairman');
+        $userGoldAndRepairman->setLastName('gold_and_repairman');
+        $userGoldAndRepairman->setPassword('secret');
+        $userGoldAndRepairman->setUserGroups(new ArrayCollection([$userGroupRepairman, $userGroupGold]));
+        $this->entityManager->persist($userGoldAndRepairman);
+
+        $this->entityManager->flush();
+    }
+
+    private function prepareContractList(): void
+    {
+        $userRegular = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'regular@example.com']);
+        $userGoldAndRepairman = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'gold_and_repairman@example.com']);
+
+        $contractList = new Product\ContractList();
+        $contractList->setUser($userRegular);
+        $contractList->setPrice(200);
+        $contractList->setSku('aaaa-1111');
+        $this->entityManager->persist($contractList);
+
+        $contractList = new Product\ContractList();
+        $contractList->setUser($userGoldAndRepairman);
+        $contractList->setPrice(100);
+        $contractList->setSku('aaaa-1111');
+        $this->entityManager->persist($contractList);
+
+        $this->entityManager->flush();
+    }
+
+    private function preparePriceList(): void
+    {
+        $userGroupRepairman = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Repairman']);
+        $userGroupGold = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Gold']);
+
+        $priceList = new Product\PriceList();
+        $priceList->setPrice(500);
+        $priceList->setSku('aaaa-1111');
+        $priceList->setUserGroup($userGroupRepairman);
+        $this->entityManager->persist($priceList);
+
+        $priceList = new Product\PriceList();
+        $priceList->setPrice(400);
+        $priceList->setSku('aaaa-1111');
+        $priceList->setUserGroup($userGroupGold);
+        $this->entityManager->persist($priceList);
+
+        $this->entityManager->flush();
+    }
+
+    private function prepareCategories(): void
     {
         $categoryPC = new Category();
         $categoryPC->setName('PC');
@@ -80,11 +185,11 @@ class SeedCommand extends Command
         $categoryDesktop->setParent($categoryPC);
         $this->entityManager->persist($categoryDesktop);
 
-        $categoryCellPhone= new Category();
+        $categoryCellPhone = new Category();
         $categoryCellPhone->setName('Cell Phone');
         $this->entityManager->persist($categoryCellPhone);
 
-        $categorySmartphone= new Category();
+        $categorySmartphone = new Category();
         $categorySmartphone->setName('Smartphone');
         $categorySmartphone->setParent($categoryCellPhone);
         $this->entityManager->persist($categorySmartphone);
@@ -101,7 +206,8 @@ class SeedCommand extends Command
         $this->entityManager->flush();
     }
 
-    private function prepareProducts():void{
+    private function prepareProducts(): void
+    {
         $categoryGaming = $this->entityManager->getRepository(Category::class)->findOneBy(['name' => 'Gaming']);
         $categoryForWork = $this->entityManager->getRepository(Category::class)->findOneBy(['name' => 'For Work']);
         $categorySmartphone = $this->entityManager->getRepository(Category::class)->findOneBy(['name' => 'Smartphone']);

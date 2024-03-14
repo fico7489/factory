@@ -2,8 +2,6 @@
 
 namespace App\Entity\Adjustment;
 
-use App\Entity\Product\ContractList;
-use App\Entity\Product\PriceList;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]

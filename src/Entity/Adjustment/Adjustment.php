@@ -3,7 +3,7 @@
 namespace App\Entity\Adjustment;
 
 use App\Entity\Order;
-use App\Entity\OrderItem;
+use App\Entity\Order\OrderItem;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -23,9 +23,6 @@ class Adjustment
 
     #[ORM\Column(type: 'float')]
     private ?float $value = null;
-
-    #[ORM\ManyToOne(targetEntity: PriceAdjustment::class)]
-    private PriceAdjustment $priceAdjustment;
 
     #[ORM\ManyToOne(targetEntity: DiscountAdjustment::class)]
     private DiscountAdjustment $discountAdjustment;
