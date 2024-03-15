@@ -35,9 +35,9 @@ class OrderPlacer
 
             $this->orderItemCreator->create($order, $product, $item['quantity']);
         }
+        $this->entityManager->refresh($order);
 
         // apply price adjustments
-        $this->entityManager->refresh($order);
         $this->productPriceCreator->create($order);
 
         // apply discounts
@@ -45,6 +45,13 @@ class OrderPlacer
 
         // apply taxes
         $this->applyTaxes($order);
+
+        // calculate total
+        foreach ($order->getOrderItems() as $orderItem) {
+            $total = $orderItem->getSubtotal() + $orderItem->getDiscount() + $orderItem->getTax();
+
+            $orderItem->setTotal($total);
+        }
 
         $this->entityManager->persist($order);
         $this->entityManager->flush();
