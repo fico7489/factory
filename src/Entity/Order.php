@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Adjustment\Adjustment;
 use App\Entity\Order\OrderItem;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,9 +20,6 @@ class Order
 
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order')]
     private Collection $orderItems;
-
-    #[ORM\OneToMany(targetEntity: Adjustment::class, mappedBy: 'order')]
-    private Collection $adjustments;
 
     public function getSubtotal(): float
     {
@@ -93,15 +89,5 @@ class Order
     public function setOrderItems(Collection $orderItems): void
     {
         $this->orderItems = $orderItems;
-    }
-
-    public function getAdjustments(): Collection
-    {
-        return $this->adjustments;
-    }
-
-    public function setAdjustments(Collection $adjustments): void
-    {
-        $this->adjustments = $adjustments;
     }
 }

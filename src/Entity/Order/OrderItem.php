@@ -2,11 +2,9 @@
 
 namespace App\Entity\Order;
 
-use App\Entity\Adjustment\Adjustment;
 use App\Entity\Order;
 use App\Entity\Order\Price\PriceItem;
 use App\Entity\Product;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -49,9 +47,6 @@ class OrderItem
 
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'orderItems')]
     private Product $product;
-
-    #[ORM\OneToMany(targetEntity: Adjustment::class, mappedBy: 'orderItem')]
-    private Collection $adjustments;
 
     public function getId(): ?int
     {
@@ -161,16 +156,6 @@ class OrderItem
     public function setProduct(Product $product): void
     {
         $this->product = $product;
-    }
-
-    public function getAdjustments(): Collection
-    {
-        return $this->adjustments;
-    }
-
-    public function setAdjustments(Collection $adjustments): void
-    {
-        $this->adjustments = $adjustments;
     }
 
     public function getDiscountItem(): ?float

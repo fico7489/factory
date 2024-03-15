@@ -24,9 +24,6 @@ class Global100Discount implements DiscountInterface
         $orderDiscount = new Order\Discount\DiscountItem();
         $orderDiscount->setName($this->name());
 
-        $orderDiscountAdjustment = new Order\Discount\DiscountItemAdjustment();
-        $orderDiscountAdjustment->setAmount($discountAmount);
-
         $discountGlobalAmount = round($discountAmount / $order->getOrderItems()->count(), 2);
 
         foreach ($order->getOrderItems() as $orderItem) {
