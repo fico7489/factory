@@ -8,7 +8,6 @@ use App\Entity\User;
 use App\Entity\UserGroup;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -41,19 +40,6 @@ class SeedCommand extends Command
         $this->preparePriceList();
         $this->prepareCategories();
         $this->prepareProducts();
-
-        /*for ($i = 0; $i < 20; $i++) {
-            $product = new Product();
-            $product->setName('Name_' . Uuid::uuid4());
-            $product->setPrice((float)(random_int(1, 1000).'.'.random_int(1,99)));
-            $product->setPublished(random_int(0,1));
-            $product->setDescription(Uuid::uuid4());
-            $product->setSku(Uuid::uuid4());
-
-            $this->entityManager->persist($product);
-        }
-
-        $this->entityManager->flush();*/
 
         return Command::SUCCESS;
     }

@@ -5,10 +5,11 @@ namespace App\Service;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Service\Discount\Applicator\DiscountCreator;
+use App\Service\Discount\Applicator\DiscountApplicator;
 use App\Service\Order\OrderCreator;
 use App\Service\Order\OrderItemCreator;
 use App\Service\Order\ProductPriceCreator;
+use App\Service\Tax\Applicator\TaxApplicator;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OrderPlacer
@@ -18,11 +19,12 @@ class OrderPlacer
         private readonly OrderItemCreator $orderItemCreator,
         private readonly EntityManagerInterface $entityManager,
         private readonly ProductPriceCreator $productPriceCreator,
-        private readonly DiscountCreator $applicator,
+        private readonly DiscountApplicator $applicator,
+        private readonly TaxApplicator $taxApplicator,
     ) {
     }
 
-    public function placeOrder(array $data)
+    public function placeOrder(array $data): Order
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['id' => $data['user_id']]);
 
@@ -41,10 +43,10 @@ class OrderPlacer
         $this->productPriceCreator->create($order);
 
         // apply discounts
-        $this->applicator->create($order);
+        $this->applicator->apply($order);
 
         // apply taxes
-        $this->applyTaxes($order);
+        $this->taxApplicator->apply($order);
 
         // calculate total
         foreach ($order->getOrderItems() as $orderItem) {
@@ -57,10 +59,5 @@ class OrderPlacer
         $this->entityManager->flush();
 
         return $order;
-    }
-
-    private function applyTaxes(Order $order): void
-    {
-        // TODO -> and to service
     }
 }

@@ -14,31 +14,23 @@ class Global100Discount implements DiscountInterface
 
     public function match(Order $order): bool
     {
-        $total = 0;
-
-        foreach ($order->getOrderItems() as $orderItem) {
-            $total += $orderItem->getPriceAdjusted();
-        }
-
-        return $total > 100 and $total < 200;
+        return $order->getSubtotal() > 100;
     }
 
     public function apply(Order $order): void
     {
-        $discountGlobalAmount = -10;
+        $discountAmount = -10;
 
         $orderDiscount = new Order\Discount\DiscountItem();
         $orderDiscount->setName($this->name());
 
         $orderDiscountAdjustment = new Order\Discount\DiscountItemAdjustment();
-        $orderDiscountAdjustment->setAmount($discountGlobalAmount);
+        $orderDiscountAdjustment->setAmount($discountAmount);
 
-        $discountAmount = $order->getSubtotal() + $discountGlobalAmount;
-
-        $discountAmountItem = $discountAmount / $order->getOrderItems()->count();
+        $discountGlobalAmount = round($discountAmount / $order->getOrderItems()->count(), 2);
 
         foreach ($order->getOrderItems() as $orderItem) {
-            $orderItem->setDiscountGlobal($orderItem->getDiscount() + $discountAmountItem);
+            $orderItem->setDiscountGlobal($orderItem->getDiscountGlobal() + $discountGlobalAmount);
         }
     }
 }

@@ -25,18 +25,18 @@ class Order
     #[ORM\OneToMany(targetEntity: Adjustment::class, mappedBy: 'order')]
     private Collection $adjustments;
 
-    public function getSubtotal()
+    public function getSubtotal(): float
     {
         $subtotal = 0;
 
         foreach ($this->getOrderItems() as $orderItem) {
-            $subtotal += $orderItem->getPriceAdjusted();
+            $subtotal += $orderItem->getSubtotal();
         }
 
         return $subtotal;
     }
 
-    public function getDiscount()
+    public function getDiscount(): float
     {
         $discount = 0;
 
@@ -47,7 +47,7 @@ class Order
         return $discount;
     }
 
-    public function getTax()
+    public function getTax(): float
     {
         $tax = 0;
 
@@ -58,7 +58,7 @@ class Order
         return $tax;
     }
 
-    public function getTotal()
+    public function getTotal(): float
     {
         $total = 0;
 

@@ -31,7 +31,6 @@ class PriceItem
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'float')]
     private float $price;
 
     #[ORM\Column(type: 'string')]

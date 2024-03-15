@@ -39,7 +39,13 @@ class ItemMonitorDiscount implements DiscountInterface
         $orderDiscount = new Order\Discount\DiscountItem();
         $orderDiscount->setName(Global100Discount::class);
 
-        $orderDiscountAdjustment = new Order\Discount\DiscountItemAdjustment();
-        $orderDiscountAdjustment->setAmount(-10);
+        $categoryMonitor = $this->entityManager->getRepository(Category::class)->findOneBy(['name' => 'Monitor']);
+        foreach ($order->getOrderItems() as $orderItem) {
+            if ($orderItem->getProduct()->getCategories()->contains($categoryMonitor)) {
+                $discountItemAmount = -($orderItem->getSubtotal() * 0.1);
+
+                $orderItem->setDiscountItem($orderItem->getDiscountItem() + $discountItemAmount);
+            }
+        }
     }
 }

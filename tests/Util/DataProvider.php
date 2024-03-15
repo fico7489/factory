@@ -2,6 +2,7 @@
 
 namespace App\Tests\Util;
 
+use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\UserGroup;
@@ -62,12 +63,27 @@ class DataProvider
         return $user;
     }
 
-    public function createProduct(float $price, string $sku = 'test'): Product
+    public function createCategory($name = 'Test'): Category
+    {
+        $category = new Category();
+        $category->setName($name);
+        $this->entityManager->persist($category);
+        $this->entityManager->flush();
+
+        return $category;
+    }
+
+    public function createProduct(float $price, string $sku = 'test', ?Category $category = null): Product
     {
         $product = new Product();
         $product->setName('test');
         $product->setPrice($price);
         $product->setSku($sku);
+
+        if ($category) {
+            $product->setCategories(new ArrayCollection([$category]));
+        }
+
         $this->entityManager->persist($product);
         $this->entityManager->flush();
 

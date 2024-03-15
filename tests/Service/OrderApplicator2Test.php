@@ -5,7 +5,7 @@ namespace App\Tests\Service;
 use App\Entity\Order\OrderItem;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Service\Discount\Applicator\DiscountCreator;
+use App\Service\Discount\Applicator\DiscountApplicator;
 use App\Service\Order\OrderCreator;
 use App\Service\Order\OrderItemCreator;
 use App\Service\Order\ProductPriceCreator;
@@ -60,9 +60,9 @@ class OrderApplicator2Test extends TestCase
         $this->assertEquals(10, $orderItem->getPrice());
         $this->assertEquals(9, $orderItem->getPriceAdjusted());
 
-        /** @var DiscountCreator $discountCreator */
-        $discountCreator = $this->container->get(DiscountCreator::class);
-        $discountCreator->create($order);
+        /** @var DiscountApplicator $discountCreator */
+        $discountCreator = $this->container->get(DiscountApplicator::class);
+        $discountCreator->apply($order);
 
         $this->entityManager->refresh($order);
         /** @var OrderItem $orderItem */
