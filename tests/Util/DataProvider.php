@@ -16,10 +16,10 @@ class DataProvider
     ) {
     }
 
-    public function getOrderData(array $productIds): array
+    public function getOrderData(User $user, array $productIds): array
     {
         $data = [
-            'user_id' => 1,
+            'user_id' => $user->getId(),
             'items' => [],
         ];
 

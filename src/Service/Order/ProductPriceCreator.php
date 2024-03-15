@@ -32,7 +32,6 @@ class ProductPriceCreator
             $this->entityManager->flush();
 
             $orderItem->setPriceItem($productPriceUser);
-
             $orderItem->setPriceAdjusted($productPriceUser->getPrice());
             $orderItem->setSubtotal($orderItem->getPriceAdjusted() * $orderItem->getQuantity());
 

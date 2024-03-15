@@ -10,11 +10,11 @@ class ItemDiscountTest extends TestCaseOrderPlacer
 {
     public function testService(): void
     {
-        $this->dataProvider->createUser();
+        $user = $this->dataProvider->createUser();
         $category = $this->dataProvider->createCategory('Monitor');
         $product = $this->dataProvider->createProduct(50, 'test', $category);
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([$product->getId() => 1]));
+        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData($user, [$product->getId() => 1]));
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];
