@@ -3,7 +3,7 @@
 namespace App\tests\Service\OrderPlacer\Discount;
 
 use App\Entity\Order\OrderItem;
-use App\Entity\Order\Price\PriceItem;
+use App\Entity\Order\Price\OrderItemPrice;
 use App\Tests\Service\OrderPlacer\TestCaseOrderPlacer;
 
 class GlobalDiscountTest extends TestCaseOrderPlacer
@@ -11,9 +11,9 @@ class GlobalDiscountTest extends TestCaseOrderPlacer
     public function testService(): void
     {
         $this->dataProvider->createUser();
-        $this->dataProvider->createProduct(50, 'test');
+        $product = $this->dataProvider->createProduct(50, 'test');
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([1 => 3]));
+        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([$product->getId() => 3]));
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];
@@ -27,7 +27,7 @@ class GlobalDiscountTest extends TestCaseOrderPlacer
         $this->assertEquals(-10, $orderItem->getDiscount());
         $this->assertEquals(35, $orderItem->getTax());
         $this->assertEquals(175, $orderItem->getTotal());
-        $this->assertEquals(PriceItem::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
 
         $this->assertCount(1, $order->getOrderItems());
         $this->assertEquals(150, $order->getSubtotal());

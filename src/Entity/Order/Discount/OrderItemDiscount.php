@@ -5,28 +5,28 @@ namespace App\Entity\Order\Discount;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class DiscountItemAdjustment
+class OrderItemDiscount
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'float')]
-    private float $amount;
+    #[ORM\Column(type: 'string')]
+    private ?string $name = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAmount(): float
+    public function getName(): ?string
     {
-        return $this->amount;
+        return $this->name;
     }
 
-    public function setAmount(float $amount): void
+    public function setName(?string $name): void
     {
-        $this->amount = $amount;
+        $this->name = $name;
     }
 }

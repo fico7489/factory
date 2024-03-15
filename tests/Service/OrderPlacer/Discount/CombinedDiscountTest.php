@@ -3,7 +3,7 @@
 namespace App\tests\Service\OrderPlacer\Discount;
 
 use App\Entity\Order\OrderItem;
-use App\Entity\Order\Price\PriceItem;
+use App\Entity\Order\Price\OrderItemPrice;
 use App\Tests\Service\OrderPlacer\TestCaseOrderPlacer;
 
 class CombinedDiscountTest extends TestCaseOrderPlacer
@@ -12,10 +12,10 @@ class CombinedDiscountTest extends TestCaseOrderPlacer
     {
         $this->dataProvider->createUser();
         $category = $this->dataProvider->createCategory('Monitor');
-        $this->dataProvider->createProduct(50, 'test', $category);
-        $this->dataProvider->createProduct(60, 'test2');
+        $product = $this->dataProvider->createProduct(50, 'test', $category);
+        $product2 = $this->dataProvider->createProduct(60, 'test2');
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([1 => 1, 2 => 1]));
+        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([$product->getId() => 1, $product2->getId() => 1]));
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];
@@ -29,7 +29,7 @@ class CombinedDiscountTest extends TestCaseOrderPlacer
         $this->assertEquals(-10, $orderItem->getDiscount());
         $this->assertEquals(10, $orderItem->getTax());
         $this->assertEquals(50, $orderItem->getTotal());
-        $this->assertEquals(PriceItem::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
 
         /** @var OrderItem $orderItem2 */
         $orderItem2 = $order->getOrderItems()[1];
@@ -43,7 +43,7 @@ class CombinedDiscountTest extends TestCaseOrderPlacer
         $this->assertEquals(-5, $orderItem2->getDiscount());
         $this->assertEquals(13.75, $orderItem2->getTax());
         $this->assertEquals(68.75, $orderItem2->getTotal());
-        $this->assertEquals(PriceItem::TYPE_PRODUCT, $orderItem2->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem2->getPriceItem()->getType());
 
         $this->assertCount(2, $order->getOrderItems());
         $this->assertEquals(110, $order->getSubtotal());

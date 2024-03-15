@@ -36,7 +36,7 @@ class ItemMonitorDiscount implements DiscountInterface
 
     public function apply(Order $order): void
     {
-        $orderDiscount = new Order\Discount\DiscountItem();
+        $orderDiscount = new Order\Discount\OrderItemDiscount();
         $orderDiscount->setName(Global100Discount::class);
 
         $categoryMonitor = $this->entityManager->getRepository(Category::class)->findOneBy(['name' => 'Monitor']);

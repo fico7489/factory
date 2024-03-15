@@ -90,9 +90,9 @@ class DataProvider
         return $product;
     }
 
-    public function createContractList(User $user, string $sku, float $price): Product\ContractList
+    public function createContractList(User $user, string $sku, float $price): Product\ProductContractList
     {
-        $contractList = new Product\ContractList();
+        $contractList = new Product\ProductContractList();
         $contractList->setSku($sku);
         $contractList->setPrice($price);
         $contractList->setUser($user);
@@ -103,9 +103,9 @@ class DataProvider
         return $contractList;
     }
 
-    public function createPriceList(UserGroup $userGroup, string $sku, float $price): Product\PriceList
+    public function createPriceList(UserGroup $userGroup, string $sku, float $price): Product\ProductPriceList
     {
-        $priceList = new Product\PriceList();
+        $priceList = new Product\ProductPriceList();
         $priceList->setPrice($price);
         $priceList->setSku($sku);
         $priceList->setUserGroup($userGroup);

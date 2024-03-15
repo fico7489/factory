@@ -5,7 +5,7 @@ namespace App\Entity\Order\Tax;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class TaxItem
+class OrderItemTax
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

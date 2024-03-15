@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Product\ContractList;
+use App\Entity\Product\ProductContractList;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,7 +30,7 @@ class User
     #[ORM\ManyToMany(targetEntity: UserGroup::class, inversedBy: 'users')]
     private Collection $userGroups;
 
-    #[ORM\OneToMany(targetEntity: ContractList::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: ProductContractList::class, mappedBy: 'user')]
     private Collection $contractLists;
 
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]

@@ -3,16 +3,16 @@
 namespace App\Tests\Service\OrderPlacer;
 
 use App\Entity\Order\OrderItem;
-use App\Entity\Order\Price\PriceItem;
+use App\Entity\Order\Price\OrderItemPrice;
 
 class BasicTest extends TestCaseOrderPlacer
 {
     public function testService(): void
     {
         $this->dataProvider->createUser();
-        $this->dataProvider->createProduct(40, 'test');
+        $product = $this->dataProvider->createProduct(40, 'test');
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([1 => 2]));
+        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([$product->getId() => 2]));
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];
@@ -26,7 +26,7 @@ class BasicTest extends TestCaseOrderPlacer
         $this->assertEquals(0, $orderItem->getDiscount());
         $this->assertEquals(20, $orderItem->getTax());
         $this->assertEquals(100, $orderItem->getTotal());
-        $this->assertEquals(PriceItem::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
 
         $this->assertCount(1, $order->getOrderItems());
         $this->assertEquals(80, $order->getSubtotal());

@@ -3,12 +3,12 @@
 namespace App\Entity\Order\Price;
 
 use App\Entity\Order\OrderItem;
-use App\Entity\Product\ContractList;
-use App\Entity\Product\PriceList;
+use App\Entity\Product\ProductContractList;
+use App\Entity\Product\ProductPriceList;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class PriceItem
+class OrderItemPrice
 {
     public const TYPE_PRODUCT = 'product';
     public const TYPE_PRICE_LIST = 'price_list';
@@ -17,8 +17,8 @@ class PriceItem
     public function __construct(
         float $price,
         string $type,
-        ?PriceList $priceList = null,
-        ?ContractList $contractList = null,
+        ?ProductPriceList $priceList = null,
+        ?ProductContractList $contractList = null,
     ) {
         $this->price = $price;
         $this->type = $type;
@@ -39,11 +39,11 @@ class PriceItem
     #[ORM\OneToOne(targetEntity: OrderItem::class)]
     private OrderItem $orderItem;
 
-    #[ORM\ManyToOne(targetEntity: PriceList::class, inversedBy: 'orderItemPrices')]
-    private ?PriceList $priceList;
+    #[ORM\ManyToOne(targetEntity: ProductPriceList::class, inversedBy: 'orderItemPrices')]
+    private ?ProductPriceList $priceList;
 
-    #[ORM\ManyToOne(targetEntity: ContractList::class, inversedBy: 'orderItemPrices')]
-    private ?ContractList $contractList;
+    #[ORM\ManyToOne(targetEntity: ProductContractList::class, inversedBy: 'orderItemPrices')]
+    private ?ProductContractList $contractList;
 
     public function getId(): ?int
     {
@@ -80,22 +80,22 @@ class PriceItem
         $this->orderItem = $orderItem;
     }
 
-    public function getPriceList(): ?PriceList
+    public function getPriceList(): ?ProductPriceList
     {
         return $this->priceList;
     }
 
-    public function setPriceList(?PriceList $priceList): void
+    public function setPriceList(?ProductPriceList $priceList): void
     {
         $this->priceList = $priceList;
     }
 
-    public function getContractList(): ?ContractList
+    public function getContractList(): ?ProductContractList
     {
         return $this->contractList;
     }
 
-    public function setContractList(?ContractList $contractList): void
+    public function setContractList(?ProductContractList $contractList): void
     {
         $this->contractList = $contractList;
     }

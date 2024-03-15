@@ -110,13 +110,13 @@ class SeedCommand extends Command
         $userRegular = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'regular@example.com']);
         $userGoldAndRepairman = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'gold_and_repairman@example.com']);
 
-        $contractList = new Product\ContractList();
+        $contractList = new Product\ProductContractList();
         $contractList->setUser($userRegular);
         $contractList->setPrice(200);
         $contractList->setSku('aaaa-1111');
         $this->entityManager->persist($contractList);
 
-        $contractList = new Product\ContractList();
+        $contractList = new Product\ProductContractList();
         $contractList->setUser($userGoldAndRepairman);
         $contractList->setPrice(100);
         $contractList->setSku('aaaa-1111');
@@ -130,13 +130,13 @@ class SeedCommand extends Command
         $userGroupRepairman = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Repairman']);
         $userGroupGold = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Gold']);
 
-        $priceList = new Product\PriceList();
+        $priceList = new Product\ProductPriceList();
         $priceList->setPrice(500);
         $priceList->setSku('aaaa-1111');
         $priceList->setUserGroup($userGroupRepairman);
         $this->entityManager->persist($priceList);
 
-        $priceList = new Product\PriceList();
+        $priceList = new Product\ProductPriceList();
         $priceList->setPrice(400);
         $priceList->setSku('aaaa-1111');
         $priceList->setUserGroup($userGroupGold);

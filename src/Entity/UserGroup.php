@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Product\PriceList;
+use App\Entity\Product\ProductPriceList;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,7 +17,7 @@ class UserGroup
     #[ORM\Column(type: 'string')]
     private ?string $name = null;
 
-    #[ORM\OneToMany(targetEntity: PriceList::class, mappedBy: 'userGroup')]
+    #[ORM\OneToMany(targetEntity: ProductPriceList::class, mappedBy: 'userGroup')]
     private Collection $priceLists;
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'userGroups')]

@@ -2,13 +2,13 @@
 
 namespace App\Entity\Product;
 
-use App\Entity\Order\Price\PriceItem;
+use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\UserGroup;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class PriceList
+class ProductPriceList
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,7 +24,7 @@ class PriceList
     #[ORM\ManyToOne(targetEntity: UserGroup::class, inversedBy: 'priceLists')]
     private UserGroup $userGroup;
 
-    #[ORM\OneToMany(targetEntity: PriceItem::class, mappedBy: 'priceList')]
+    #[ORM\OneToMany(targetEntity: OrderItemPrice::class, mappedBy: 'priceList')]
     private Collection $orderItemPrices;
 
     public function getId(): ?int

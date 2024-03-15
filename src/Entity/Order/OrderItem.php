@@ -3,7 +3,7 @@
 namespace App\Entity\Order;
 
 use App\Entity\Order;
-use App\Entity\Order\Price\PriceItem;
+use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\Product;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -39,8 +39,8 @@ class OrderItem
     #[ORM\Column(type: 'float', nullable: true)]
     private ?float $total = null;
 
-    #[ORM\OneToOne(targetEntity: PriceItem::class)]
-    private ?PriceItem $priceItem = null;
+    #[ORM\OneToOne(targetEntity: OrderItemPrice::class)]
+    private ?OrderItemPrice $priceItem = null;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderItems')]
     private Order $order;
@@ -128,12 +128,12 @@ class OrderItem
         $this->total = $total;
     }
 
-    public function getPriceItem(): ?PriceItem
+    public function getPriceItem(): ?OrderItemPrice
     {
         return $this->priceItem;
     }
 
-    public function setPriceItem(?PriceItem $priceItem): void
+    public function setPriceItem(?OrderItemPrice $priceItem): void
     {
         $this->priceItem = $priceItem;
     }

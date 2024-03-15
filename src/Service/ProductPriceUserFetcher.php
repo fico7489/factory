@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Order\Price\PriceItem;
+use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,30 +15,30 @@ class ProductPriceUserFetcher
     }
 
     // gimme price of product for given user
-    public function fetch(User $user, Product $product): PriceItem
+    public function fetch(User $user, Product $product): OrderItemPrice
     {
         $sku = $product->getSku();
 
         // add default product price
         $orderItemPrices = [
-            new PriceItem(price: $product->getPrice(), type: PriceItem::TYPE_PRODUCT),
+            new OrderItemPrice(price: $product->getPrice(), type: OrderItemPrice::TYPE_PRODUCT),
         ];
 
         // add price by contract_list
-        $contractList = $this->entityManager->getRepository(Product\ContractList::class)->findOneBy(['user' => $user, 'sku' => $sku]);
+        $contractList = $this->entityManager->getRepository(Product\ProductContractList::class)->findOneBy(['user' => $user, 'sku' => $sku]);
         if ($contractList) {
-            $orderItemPrices[] = new PriceItem(price: $contractList->getPrice(), type: PriceItem::TYPE_CONTRACT_LIST, contractList: $contractList);
+            $orderItemPrices[] = new OrderItemPrice(price: $contractList->getPrice(), type: OrderItemPrice::TYPE_CONTRACT_LIST, contractList: $contractList);
         }
 
         // add prices by price_list and user_groups
-        $priceLists = $this->entityManager->getRepository(Product\PriceList::class)->findBy(['userGroup' => $user->getUserGroups()->toArray(), 'sku' => $sku]);
+        $priceLists = $this->entityManager->getRepository(Product\ProductPriceList::class)->findBy(['userGroup' => $user->getUserGroups()->toArray(), 'sku' => $sku]);
         foreach ($priceLists as $priceList) {
-            $orderItemPrices[] = new PriceItem(price: $priceList->getPrice(), type: PriceItem::TYPE_PRICE_LIST, priceList: $priceList);
+            $orderItemPrices[] = new OrderItemPrice(price: $priceList->getPrice(), type: OrderItemPrice::TYPE_PRICE_LIST, priceList: $priceList);
         }
 
         usort($orderItemPrices, function ($a, $b) {
-            /* @var PriceItem $a */
-            /* @var PriceItem $b */
+            /* @var OrderItemPrice $a */
+            /* @var OrderItemPrice $b */
 
             return $a->getPrice() > $b->getPrice() ? 1 : -1;
         });

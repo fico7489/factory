@@ -3,7 +3,7 @@
 namespace App\tests\Service\OrderPlacer\Discount;
 
 use App\Entity\Order\OrderItem;
-use App\Entity\Order\Price\PriceItem;
+use App\Entity\Order\Price\OrderItemPrice;
 use App\Tests\Service\OrderPlacer\TestCaseOrderPlacer;
 
 class ItemDiscountTest extends TestCaseOrderPlacer
@@ -12,9 +12,9 @@ class ItemDiscountTest extends TestCaseOrderPlacer
     {
         $this->dataProvider->createUser();
         $category = $this->dataProvider->createCategory('Monitor');
-        $this->dataProvider->createProduct(50, 'test', $category);
+        $product = $this->dataProvider->createProduct(50, 'test', $category);
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([1 => 1]));
+        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData([$product->getId() => 1]));
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];
@@ -28,7 +28,7 @@ class ItemDiscountTest extends TestCaseOrderPlacer
         $this->assertEquals(-5, $orderItem->getDiscount());
         $this->assertEquals(11.25, $orderItem->getTax());
         $this->assertEquals(56.25, $orderItem->getTotal());
-        $this->assertEquals(PriceItem::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
 
         $this->assertCount(1, $order->getOrderItems());
         $this->assertEquals(50, $order->getSubtotal());
