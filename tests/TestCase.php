@@ -7,6 +7,8 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Tests\Util\DataProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\DependencyInjection\Container;
 
 class TestCase extends ApiTestCase
@@ -31,6 +33,10 @@ class TestCase extends ApiTestCase
 
     private function migrateDb(): void
     {
+        $application = new Application(self::$kernel);
+        $application->setAutoExit(false);
+        $application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
+
         $metaData = $this->entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($this->entityManager);
         $schemaTool->updateSchema($metaData);
