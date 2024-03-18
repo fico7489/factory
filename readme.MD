@@ -5,7 +5,7 @@
 
 
 vendor/bin/php-cs-fixer fix
-vendor/bin/phpstan analyse
+vendor/bin/phpstan analyse --memory-limit=1G
 vendor/bin/phpunit
 
 php bin/console doctrine:schema:drop --force --full-database
