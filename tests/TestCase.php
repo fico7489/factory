@@ -43,7 +43,7 @@ class TestCase extends ApiTestCase
     {
         $application = new Application(self::$kernel);
         $application->setAutoExit(false);
-        //$application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
+        // $application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
 
         $metaData = $this->entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($this->entityManager);

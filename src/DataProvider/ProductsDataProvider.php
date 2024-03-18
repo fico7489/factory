@@ -15,7 +15,7 @@ final class ProductsDataProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        $filterData = $context['filters'];
+        $filterData = $context['filters'] ?? [];
 
         $filters = $filterData['filters'] ?? [];
         $sorts = $filterData['sorts'] ?? [];

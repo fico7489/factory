@@ -18,7 +18,7 @@ class Formatter implements FormatterInterface
 {
     public function format(LogRecord $record)
     {
-        if ($record->context['sql'] ?? null) {
+        if (($record->context['sql'] ?? null) and isset($record->context['params'])) {
             $sql = $record->context['sql'];
 
             $parameters = $record->context['params'] ?? [];
@@ -42,6 +42,10 @@ class Formatter implements FormatterInterface
     {
         foreach ($params as $value) {
             $sql = preg_replace('[\?]', "'".$value."'", $sql, 1);
+        }
+
+        foreach ($params as $name => $value) {
+            $sql = str_replace(':'.$name, "'".$value."'", $sql);
         }
 
         return $sql;

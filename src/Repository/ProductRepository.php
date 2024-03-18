@@ -19,13 +19,17 @@ class ProductRepository extends ServiceEntityRepository
 
     public function findByFilters(array $filters, array $sorts)
     {
+        $sqlParams = [];
+
+        // filter
+        $nameFilter = $this->prepareNameFilter($filters, $sqlParams);
+        $categoryFilter = $this->prepareCategoryFilter($filters, $sqlParams);
+
         // sort
         $sqlSort = $this->prepareSqlSort($sorts);
 
-        // where
         // filter (price, name, category)
         // sort (price, name)
-        $sqlWhere = '';
 
         /** @var User $user */
         $user = $this->security->getUser();
@@ -47,16 +51,25 @@ class ProductRepository extends ServiceEntityRepository
             FROM
             product p
         WHERE 1 = 1
-        '.$sqlWhere.'
+        '.$categoryFilter.'
+        '.$nameFilter.'
         '.$sqlSort.'
         LIMIT
-            1
+            10
         ';
 
+        // TODO limit from api platform
+
         $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $params['name'] = 'aaaa_Firs%';
+
+        foreach ($sqlParams as $name => $value) {
+            $stmt->bindValue($name, $value);
+        }
+
         $results = $stmt->executeQuery()->fetchAllAssociative();
 
-        $ids = [];
+        $ids = [0];
         $pricesAdjusted = [];
         foreach ($results as $result) {
             $id = $result['id'];
@@ -85,17 +98,44 @@ class ProductRepository extends ServiceEntityRepository
     private function prepareSqlSort(array $sorts): string
     {
         if (0 === count($sorts)) {
-            $sorts['price'] = 'asc';
+            $sorts[] = ['price' => 'asc'];
         }
 
         $sqlSort = [];
-        foreach ($sorts as $sortName => $sortType) {
+        foreach ($sorts as $value) {
+            $sortName = array_key_first($value);
+            $sortType = $value[$sortName];
+
             $sqlSort[] = $sortName.' '.$sortType;
         }
 
         $sqlSort = ' ORDER BY '.implode(',', $sqlSort);
 
         return $sqlSort;
+    }
+
+    private function prepareCategoryFilter(array $filters, array &$sqlParams): string
+    {
+        if (!empty($value = $filters[0]['category']['equals'] ?? null)) {
+            $sqlParams['category'] = $value;
+
+            return '        AND EXISTS (
+                SELECT * FROM product_category pc where pc.category_id in (:category) and pc.product_id = p.id
+            ) ';
+        }
+
+        return '';
+    }
+
+    private function prepareNameFilter(array $filters, array &$sqlParams): string
+    {
+        if (!empty($value = $filters[0]['name']['starts_with'] ?? null)) {
+            $sqlParams['name'] = $value.'%';
+
+            return ' AND name LIKE :name  ';
+        }
+
+        return '';
     }
 
     private function prepareUserGroupIds(User $user): string
