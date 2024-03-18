@@ -1,7 +1,10 @@
 doctrine:
     dbal:
-        url: '%env(resolve:DATABASE_URL)%'
-        logging: true
+        connections:
+            default:
+                url: '%env(resolve:DATABASE_URL)%'
+                logging: true
+                use_savepoints: true
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true

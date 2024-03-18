@@ -30,13 +30,7 @@ class ProductRepository extends ServiceEntityRepository
         /** @var User $user */
         $user = $this->security->getUser();
         $userId = $user->getUserIdentifier();
-        $userGroups = $user->getUserGroups()->toArray();
-
-        $userGroupIds = [-1];
-        foreach ($userGroups as $userGroup) {
-            $userGroupIds[] = $userGroup->getId();
-        }
-        $userGroupIds = implode(',', $userGroupIds);
+        $userGroupIds = $this->prepareUserGroupIds($user);
 
         $sql = '
         SELECT
@@ -102,5 +96,18 @@ class ProductRepository extends ServiceEntityRepository
         $sqlSort = ' ORDER BY '.implode(',', $sqlSort);
 
         return $sqlSort;
+    }
+
+    private function prepareUserGroupIds(User $user): string
+    {
+        $userGroups = $user->getUserGroups()->toArray();
+
+        $userGroupIds = [-1];
+        foreach ($userGroups as $userGroup) {
+            $userGroupIds[] = $userGroup->getId();
+        }
+        $userGroupIds = implode(',', $userGroupIds);
+
+        return $userGroupIds;
     }
 }

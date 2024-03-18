@@ -7,6 +7,11 @@
     <php>
         <server name="APP_ENV" value="test" force="true"/>
     </php>
+
+    <extensions>
+        <bootstrap class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
+    </extensions>
+
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>tests</directory>

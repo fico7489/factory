@@ -14,22 +14,39 @@ class PaginateV2ProductsTest extends TestCase
     {
         $this->asUserId(1);
 
-        list($userFirst, $userSecond, $userThird) = $this->prepareProducts();
+        list($userFirst, $userSecond, $userThird, $productFirst, $productSecond) = $this->prepareProducts();
 
+        //test matching price_adjusted, 100 for third user
         $this->asUser($userThird);
         $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=asc');
         $firstProduct = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(100, $firstProduct['priceAdjusted']);
 
+        //test matching price_adjusted, 100 for second user
         $this->asUser($userSecond);
         $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=asc');
         $firstProduct = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(99, $firstProduct['priceAdjusted']);
 
+        //test matching price_adjusted, 100 for first user
         $this->asUser($userFirst);
         $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=asc');
         $firstProduct = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(98, $firstProduct['priceAdjusted']);
+
+        //test sorting by price -> asc
+        $this->asUser($userFirst);
+        $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=asc');
+        $firstProduct = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals(98, $firstProduct['priceAdjusted']);
+        $this->assertEquals($productFirst->getId(), $firstProduct['_id']);
+
+        //test sorting by price -> desc
+        $this->asUser($userFirst);
+        $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=desc');
+        $firstProduct = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals(102, $firstProduct['priceAdjusted']);
+        $this->assertEquals($productSecond->getId(), $firstProduct['_id']);
     }
 
     private function prepareProducts(): array
@@ -57,6 +74,8 @@ class PaginateV2ProductsTest extends TestCase
 
         $this->entityManager->flush();
 
+        $productFirst = null;
+        $productSecond = null;
         for ($i = 1; $i < 26; ++$i) {
             $sku = Uuid::uuid4();
 
@@ -74,8 +93,13 @@ class PaginateV2ProductsTest extends TestCase
                 $this->dataProvider->createPriceList($userGroupSecond, $sku, 99);
 
                 $this->dataProvider->createContractList($userFirst, $sku, 98);
+
+                $productFirst = $product;
             } elseif (2 === $i) {
+                $product->setPrice(102);
                 $product->setCategories(new ArrayCollection([$categoryTwo]));
+
+                $productSecond = $product;
             } elseif (3 === $i) {
                 $product->setCategories(new ArrayCollection([$categoryOneOne]));
             } elseif (4 === $i) {
@@ -89,6 +113,6 @@ class PaginateV2ProductsTest extends TestCase
 
         $this->entityManager->flush();
 
-        return [$userFirst, $userSecond, $userThird];
+        return [$userFirst, $userSecond, $userThird, $productFirst, $productSecond];
     }
 }
