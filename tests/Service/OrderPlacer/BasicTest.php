@@ -12,7 +12,7 @@ class BasicTest extends TestCaseOrderPlacer
         $user = $this->dataProvider->createUser();
         $product = $this->dataProvider->createProduct(40, 'test');
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData($user, [$product->getId() => 2]));
+        $order = $this->orderPlacer->placeOrder($user, [$product->getId() => 2]);
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];

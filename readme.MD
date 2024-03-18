@@ -35,7 +35,10 @@ ruta "/api/category/{category}/products", test "PaginateProductsTest.php" -> sam
 ruta "/api/products/{id}", test "PaginateProductsTest.php"
 
 4. Napraviti rutu za filtriranje proizvoda po cijeni, nazivu i kategoriji te sortiranje proizvoda po cijeni i po nazivu silazno/uzlazno. (Pripaziti na contract i price liste.)
+ruta "/api/v2/products", test "PaginateV2ProductsTest.php"
 
 5. Napraviti rutu za dodavanje nove narudžbe koja prima array od proizvoda.
+
+
 6. Rješenje mora dobro i brzo funkcionirati s 5 proizvoda te sa cca 20k proizvoda s n milijuna varijacija cijena za proizvode.
 

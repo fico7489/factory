@@ -24,18 +24,16 @@ class OrderPlacer
     ) {
     }
 
-    public function placeOrder(array $data): Order
+    public function placeOrder(User $user, array $items): Order
     {
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['id' => $data['user_id']]);
-
         // create order
         $order = $this->orderCreator->create($user);
 
         // create order items
-        foreach ($data['items'] as $item) {
-            $product = $this->entityManager->getRepository(Product::class)->findOneBy(['id' => $item['product_id']]);
+        foreach ($items as $productId => $quantity) {
+            $product = $this->entityManager->getRepository(Product::class)->find($productId);
 
-            $this->orderItemCreator->create($order, $product, $item['quantity']);
+            $this->orderItemCreator->create($order, $product, $quantity);
         }
         $this->entityManager->refresh($order);
 

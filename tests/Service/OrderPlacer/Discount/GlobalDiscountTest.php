@@ -13,7 +13,7 @@ class GlobalDiscountTest extends TestCaseOrderPlacer
         $user = $this->dataProvider->createUser();
         $product = $this->dataProvider->createProduct(50, 'test');
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData($user, [$product->getId() => 3]));
+        $order = $this->orderPlacer->placeOrder($user, [$product->getId() => 3]);
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];

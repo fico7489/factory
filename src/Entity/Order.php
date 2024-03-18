@@ -2,10 +2,20 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use App\Controller\CreateOrderAction;
 use App\Entity\Order\OrderItem;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ApiResource(
+    operations: [
+        new Post(
+            controller: CreateOrderAction::class,
+        ),
+    ],
+)]
 #[ORM\Entity]
 #[ORM\Table(name: '`order`')]
 class Order

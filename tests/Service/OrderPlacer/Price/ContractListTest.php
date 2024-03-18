@@ -15,7 +15,7 @@ class ContractListTest extends TestCaseOrderPlacer
 
         $contractList = $this->dataProvider->createContractList($user, 'test', 27);
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData($user, [$product->getId() => 3]));
+        $order = $this->orderPlacer->placeOrder($user, [$product->getId() => 3]);
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];

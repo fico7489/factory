@@ -12,25 +12,26 @@ class PaginateProductsTest extends TestCase
 {
     public function testService(): void
     {
-        $this->asUserId(1);
+        $user = $this->dataProvider->createUser();
+        $this->asUser($user);
 
-        $this->prepareProducts();
+        list($product, $categoryOne, $categoryOneOne, $categoryTwo) = $this->prepareProducts();
 
-        $response = $this->client->request('GET', '/api/products/1');
-        $this->assertEquals('/api/products/1', $response->toArray()['data']['id']);
+        $response = $this->client->request('GET', '/api/products/'.$product->getId());
+        $this->assertEquals('/api/products/'.$product->getId(), $response->toArray()['data']['id']);
 
         $response = $this->client->request('GET', '/api/products');
 
         $this->assertEquals(10, count($response->toArray()['data']));
         $this->assertEquals(25, $response->toArray()['meta']['totalItems']);
 
-        $response = $this->client->request('GET', '/api/category/1/products/');
+        $response = $this->client->request('GET', '/api/category/'.$categoryOne->getId().'/products/');
         $this->assertEquals(2, count($response->toArray()['data']));
 
-        $response = $this->client->request('GET', '/api/category/2/products/');
+        $response = $this->client->request('GET', '/api/category/'.$categoryOneOne->getId().'/products/');
         $this->assertEquals(1, count($response->toArray()['data']));
 
-        $response = $this->client->request('GET', '/api/category/3/products/');
+        $response = $this->client->request('GET', '/api/category/'.$categoryTwo->getId().'/products/');
         $this->assertEquals(2, count($response->toArray()['data']));
     }
 
@@ -69,10 +70,12 @@ class PaginateProductsTest extends TestCase
             } elseif (4 === $i) {
                 $product->setCategories(new ArrayCollection([$categoryOne, $categoryTwo]));
             }
-            $product->setCategories(new ArrayCollection([$categoryOne]));
+
             $this->entityManager->persist($product);
         }
 
         $this->entityManager->flush();
+
+        return [$product, $categoryOne, $categoryOneOne, $categoryTwo];
     }
 }

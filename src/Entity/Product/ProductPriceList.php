@@ -2,11 +2,18 @@
 
 namespace App\Entity\Product;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\UserGroup;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ApiResource(
+    operations: [
+        new Get(),
+    ],
+)]
 #[ORM\Entity]
 class ProductPriceList
 {

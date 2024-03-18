@@ -13,7 +13,7 @@ class GreenTaxTest extends TestCaseOrderPlacer
         $product = $this->dataProvider->createProduct(200, 'test', $category);
         $product2 = $this->dataProvider->createProduct(300, 'test2');
 
-        $order = $this->orderPlacer->placeOrder($this->dataProvider->getOrderData($user, [$product->getId() => 1, $product2->getId() => 1]));
+        $order = $this->orderPlacer->placeOrder($user, [$product->getId() => 1, $product2->getId() => 1]);
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];

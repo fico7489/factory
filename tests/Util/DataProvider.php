@@ -16,23 +16,6 @@ class DataProvider
     ) {
     }
 
-    public function getOrderData(User $user, array $productIds): array
-    {
-        $data = [
-            'user_id' => $user->getId(),
-            'items' => [],
-        ];
-
-        foreach ($productIds as $productId => $quantity) {
-            $data['items'][] = [
-                'product_id' => $productId,
-                'quantity' => $quantity,
-            ];
-        }
-
-        return $data;
-    }
-
     public function createUser(?UserGroup $userGroup = null, bool $flush = true): User
     {
         $user = new User();

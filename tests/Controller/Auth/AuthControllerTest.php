@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\Auth;
 
 use App\Entity\User;
 use App\Tests\TestCase;
