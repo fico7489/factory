@@ -2,15 +2,15 @@
 
 namespace App\Service\Paginator\Product;
 
-use App\Entity\User;
+use App\Service\Paginator\Interface\ValidatorInterface;
 
-class FilterValidator
+class ProductsFilterValidator implements ValidatorInterface
 {
     public function validate(array $context): array
     {
         $filterData = $context['filters'] ?? [];
 
-        //TODO validate filters
+        // TODO validate filters
 
         return $filterData;
     }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Service\Paginator\Product;
+namespace App\Service\Paginator\Product\Sql;
 
 use App\Entity\User;
 
-class ProductSql
+class SqlHelper
 {
     public function prepareSqlSort(array $sorts): string
     {

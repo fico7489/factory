@@ -2,51 +2,37 @@
 
 namespace App\Service\Paginator;
 
-use App\Entity\Product;
-use Doctrine\ORM\EntityManagerInterface;
+use ApiPlatform\State\Pagination\TraversablePaginator;
+use App\Service\Paginator\Interface\DataProviderInterface;
+use App\Service\Paginator\Interface\ValidatorInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class Paginator
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
-    public function paginate(string $className, string $sql, $sqlParams): array
+    public function paginate(array $context, DataProviderInterface $dataProvider, ValidatorInterface $validator): TraversablePaginator
     {
-        $stmt = $this->entityManager->getConnection()->prepare($sql);
+        $filterData = $validator->validate($context);
+        $entities = $dataProvider->paginate($filterData);
 
-        foreach ($sqlParams as $name => $value) {
-            $stmt->bindValue($name, $value);
-        }
+        return $this->fetchPaginator($entities);
+    }
 
-        $results = $stmt->executeQuery()->fetchAllAssociative();
+    public function fetchPaginator(array $entities): TraversablePaginator
+    {
+        $itemsPerPage = $this->parameterBag->get('api_platform.collection.pagination.items_per_page');
+        $itemsPerPageParameterName = $this->parameterBag->get('api_platform.collection.pagination.items_per_page_parameter_name');
+        $pageParameterName = $this->parameterBag->get('api_platform.collection.pagination.page_parameter_name');
 
-        $ids = [0];
-        $pricesAdjusted = [];
-        foreach ($results as $result) {
-            $id = $result['id'];
-            $priceAdjusted = $result['price_adjusted'];
+        $currentPage = (int) $this->requestStack->getCurrentRequest()->query->get($pageParameterName, 1);
+        $itemsPerPage = (int) $this->requestStack->getCurrentRequest()->query->get($itemsPerPageParameterName, $itemsPerPage);
 
-            $ids[] = $id;
-            $pricesAdjusted[$id] = $priceAdjusted;
-        }
-
-        $queryBuilder = $this
-            ->entityManager
-            ->getRepository($className)
-            ->createQueryBuilder('p')
-            ->where('p.id in (:ids)')
-            ->setParameter('ids', $ids)
-            ->orderBy('FIELD(p.id,'.implode(',', $ids).')');
-
-        $entities = $queryBuilder->getQuery()->getResult();
-
-        foreach ($entities as $entity) {
-            /* @var Product $product */
-            $entity->setPriceAdjusted($pricesAdjusted[$entity->getId()]);
-        }
-
-        return $entities;
+        return new TraversablePaginator(new \ArrayIterator($entities), $currentPage, $itemsPerPage, count($entities));
     }
 }
