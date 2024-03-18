@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use App\Entity\User;
+use App\Service\Paginator\Paginator;
 use App\Service\Product\ProductSql;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -12,9 +13,10 @@ use Symfony\Bundle\SecurityBundle\Security;
 class ProductRepository extends ServiceEntityRepository
 {
     public function __construct(
-        ManagerRegistry             $registry,
-        private readonly Security   $security,
+        ManagerRegistry $registry,
+        private readonly Security $security,
         private readonly ProductSql $productSql,
+        private readonly Paginator $paginator,
     ) {
         parent::__construct($registry, Product::class);
     }
@@ -61,37 +63,7 @@ class ProductRepository extends ServiceEntityRepository
 
         // TODO limit from api platform
 
-        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
-        $params['name'] = 'aaaa_Firs%';
-
-        foreach ($sqlParams as $name => $value) {
-            $stmt->bindValue($name, $value);
-        }
-
-        $results = $stmt->executeQuery()->fetchAllAssociative();
-
-        $ids = [0];
-        $pricesAdjusted = [];
-        foreach ($results as $result) {
-            $id = $result['id'];
-            $priceAdjusted = $result['price_adjusted'];
-
-            $ids[] = $id;
-            $pricesAdjusted[$id] = $priceAdjusted;
-        }
-
-        $queryBuilder = $this
-            ->createQueryBuilder('p')
-            ->where('p.id in (:ids)')
-            ->setParameter('ids', $ids)
-            ->orderBy('FIELD(p.id,'.implode(',', $ids).')');
-
-        $products = $queryBuilder->getQuery()->getResult();
-
-        foreach ($products as $product) {
-            /* @var Product $product */
-            $product->setPriceAdjusted($pricesAdjusted[$product->getId()]);
-        }
+        $products = $this->paginator->paginate(Product::class, $sql, $sqlParams);
 
         return $products;
     }

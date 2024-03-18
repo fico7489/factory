@@ -2,11 +2,7 @@
 
 namespace App\Service\Product;
 
-use App\Entity\Product;
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\SecurityBundle\Security;
 
 class ProductSql
 {
