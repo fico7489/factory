@@ -40,6 +40,7 @@ class ProductsDataProviderSql implements DataProviderInterface
         $sorts = $filterData['sorts'] ?? [];
         $sqlSort = $this->productSql->prepareSqlSort($sorts);
 
+        // select min price from all 3 price sources(product, product_contract_list and product_price_list)
         $sql = '
         SELECT
             *,
@@ -64,8 +65,6 @@ class ProductsDataProviderSql implements DataProviderInterface
          OFFSET
             '.$offset.'
         ';
-
-        // TODO limit from api platform
 
         // prepare statement
         $stmt = $this->entityManager->getConnection()->prepare($sql);

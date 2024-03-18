@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+// filter products by category for that one custom api call
 class ProductsPerCategoryExtension implements QueryCollectionExtensionInterface
 {
     public function __construct(

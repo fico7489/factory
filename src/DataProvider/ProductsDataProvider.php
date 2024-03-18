@@ -11,6 +11,7 @@ use App\Service\Paginator\Product\ProductsDataProviderSql;
 use App\Service\Paginator\Product\ProductsFilterValidator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+// data provider for products paginator, we can change implementation from mysql to ES with configuration, tests are covering everything in each implementation
 final class ProductsDataProvider implements ProviderInterface
 {
     public function __construct(

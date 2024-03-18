@@ -8,6 +8,7 @@ use App\Service\Paginator\Interface\ValidatorInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+// general paginator for all data providers
 class Paginator
 {
     public function __construct(

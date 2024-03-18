@@ -4,6 +4,7 @@ namespace App\Service\Paginator\Product\Sql;
 
 use App\Entity\User;
 
+// just one helper to move some logic
 class SqlHelper
 {
     public function prepareSqlSort(array $sorts): string

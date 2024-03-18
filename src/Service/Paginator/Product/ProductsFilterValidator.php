@@ -10,7 +10,7 @@ class ProductsFilterValidator implements ValidatorInterface
     {
         $filterData = $context['filters'] ?? [];
 
-        // TODO validate filters
+        // TODO validate filters, not implemented
 
         return $filterData;
     }
