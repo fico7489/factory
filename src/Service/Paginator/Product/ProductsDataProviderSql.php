@@ -20,7 +20,7 @@ class ProductsDataProviderSql implements DataProviderInterface
     ) {
     }
 
-    public function paginate(array $filterData): array
+    public function paginate(array $filterData, int $limit, int $offset): array
     {
         /** @var User $user */
         $user = $this->security->getUser();
@@ -60,7 +60,9 @@ class ProductsDataProviderSql implements DataProviderInterface
         '.$sqlFilterPrice.'
         '.$sqlSort.'
         LIMIT
-            10
+            '.$limit.'
+         OFFSET
+            '.$offset.'
         ';
 
         // TODO limit from api platform

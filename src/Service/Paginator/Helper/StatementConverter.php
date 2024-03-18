@@ -28,10 +28,10 @@ class StatementConverter
         $queryBuilder = $this
             ->entityManager
             ->getRepository($className)
-            ->createQueryBuilder('p')
-            ->where('p.id in (:ids)')
+            ->createQueryBuilder('o')
+            ->where('o.id in (:ids)')
             ->setParameter('ids', $ids)
-            ->orderBy('FIELD(p.id,'.implode(',', $ids).')');
+            ->orderBy('FIELD(o.id,'.implode(',', $ids).')');
 
         $entities = $queryBuilder->getQuery()->getResult();
 

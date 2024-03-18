@@ -18,20 +18,16 @@ class Paginator
 
     public function paginate(array $context, DataProviderInterface $dataProvider, ValidatorInterface $validator): TraversablePaginator
     {
-        $filterData = $validator->validate($context);
-        $entities = $dataProvider->paginate($filterData);
-
-        return $this->fetchPaginator($entities);
-    }
-
-    public function fetchPaginator(array $entities): TraversablePaginator
-    {
         $itemsPerPage = $this->parameterBag->get('api_platform.collection.pagination.items_per_page');
         $itemsPerPageParameterName = $this->parameterBag->get('api_platform.collection.pagination.items_per_page_parameter_name');
         $pageParameterName = $this->parameterBag->get('api_platform.collection.pagination.page_parameter_name');
 
         $currentPage = (int) $this->requestStack->getCurrentRequest()->query->get($pageParameterName, 1);
         $itemsPerPage = (int) $this->requestStack->getCurrentRequest()->query->get($itemsPerPageParameterName, $itemsPerPage);
+        $offset = ($currentPage - 1) * $itemsPerPage;
+
+        $filterData = $validator->validate($context);
+        $entities = $dataProvider->paginate($filterData, $itemsPerPage, $offset);
 
         return new TraversablePaginator(new \ArrayIterator($entities), $currentPage, $itemsPerPage, count($entities));
     }
