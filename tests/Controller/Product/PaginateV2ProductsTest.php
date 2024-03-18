@@ -19,34 +19,46 @@ class PaginateV2ProductsTest extends TestCase
         //test matching price_adjusted, 100 for third user
         $this->asUser($userThird);
         $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=asc');
-        $firstProduct = $response->toArray()['data'][0]['attributes'];
-        $this->assertEquals(100, $firstProduct['priceAdjusted']);
+        $data = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals(100, $data['priceAdjusted']);
 
         //test matching price_adjusted, 100 for second user
         $this->asUser($userSecond);
         $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=asc');
-        $firstProduct = $response->toArray()['data'][0]['attributes'];
-        $this->assertEquals(99, $firstProduct['priceAdjusted']);
+        $data = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals(99, $data['priceAdjusted']);
 
         //test matching price_adjusted, 100 for first user
         $this->asUser($userFirst);
         $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=asc');
-        $firstProduct = $response->toArray()['data'][0]['attributes'];
-        $this->assertEquals(98, $firstProduct['priceAdjusted']);
+        $data = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals(98, $data['priceAdjusted']);
 
         //test sorting by price -> asc
         $this->asUser($userFirst);
         $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=asc');
-        $firstProduct = $response->toArray()['data'][0]['attributes'];
-        $this->assertEquals(98, $firstProduct['priceAdjusted']);
-        $this->assertEquals($productFirst->getId(), $firstProduct['_id']);
+        $data = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals(98, $data['priceAdjusted']);
+        $this->assertEquals($productFirst->getId(), $data['_id']);
 
         //test sorting by price -> desc
         $this->asUser($userFirst);
         $response = $this->client->request('GET', '/api/v2/products?sorts[price_adjusted]=desc');
-        $firstProduct = $response->toArray()['data'][0]['attributes'];
-        $this->assertEquals(102, $firstProduct['priceAdjusted']);
-        $this->assertEquals($productSecond->getId(), $firstProduct['_id']);
+        $data = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals(102, $data['priceAdjusted']);
+        $this->assertEquals($productSecond->getId(), $data['_id']);
+
+        //test sorting by name -> asc
+        $this->asUser($userFirst);
+        $response = $this->client->request('GET', '/api/v2/products?sorts[name]=asc');
+        $data = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals($productFirst->getId(), $data['_id']);
+
+        //test sorting by name -> desc
+        $this->asUser($userFirst);
+        $response = $this->client->request('GET', '/api/v2/products?sorts[name]=desc');
+        $data = $response->toArray()['data'][0]['attributes'];
+        $this->assertEquals($productSecond->getId(), $data['_id']);
     }
 
     private function prepareProducts(): array
@@ -80,7 +92,7 @@ class PaginateV2ProductsTest extends TestCase
             $sku = Uuid::uuid4();
 
             $product = new Product();
-            $product->setName('test_'.Uuid::uuid4());
+            $product->setName('product_'.Uuid::uuid4());
             $product->setDescription('decription_'.Uuid::uuid4());
             $product->setPrice(101);
             $product->setSku($sku);
@@ -89,6 +101,7 @@ class PaginateV2ProductsTest extends TestCase
             if (1 === $i) {
                 $product->setCategories(new ArrayCollection([$categoryOne]));
                 $product->setPrice(100);
+                $product->setName('aaaa_First');
 
                 $this->dataProvider->createPriceList($userGroupSecond, $sku, 99);
 
@@ -98,6 +111,7 @@ class PaginateV2ProductsTest extends TestCase
             } elseif (2 === $i) {
                 $product->setPrice(102);
                 $product->setCategories(new ArrayCollection([$categoryTwo]));
+                $product->setName('zzzz_First');
 
                 $productSecond = $product;
             } elseif (3 === $i) {
