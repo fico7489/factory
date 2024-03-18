@@ -9,9 +9,3 @@ services:
         exclude:
             - '../src/Entity/'
             - '../src/Kernel.php'
-
-
-    App\Service\Log\Formatter:
-        public: true
-
-
