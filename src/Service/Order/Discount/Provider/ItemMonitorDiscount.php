@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Service\Discount\Provider;
+namespace App\Service\Order\Discount\Provider;
 
 use App\Entity\Category;
 use App\Entity\Order;
-use App\Service\Discount\Interface\DiscountInterface;
+use App\Service\Order\Discount\Interface\DiscountInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ItemMonitorDiscount implements DiscountInterface

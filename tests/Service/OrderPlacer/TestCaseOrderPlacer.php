@@ -2,7 +2,7 @@
 
 namespace App\Tests\Service\OrderPlacer;
 
-use App\Service\OrderPlacer;
+use App\Service\Order\OrderPlacer;
 use App\Tests\TestCase;
 
 class TestCaseOrderPlacer extends TestCase

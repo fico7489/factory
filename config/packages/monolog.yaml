@@ -10,5 +10,5 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/doctrine_%kernel.environment%.log"
             level: debug
-            formatter: App\Service\Log\Formatter
+            formatter: App\Service\Util\Log\DoctrineSqlFormatter
 

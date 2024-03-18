@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Order\Price;
 
 use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\Product;

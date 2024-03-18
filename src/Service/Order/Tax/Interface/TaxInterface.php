@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Tax\Interface;
+namespace App\Service\Order\Tax\Interface;
 
 use App\Entity\Order;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;

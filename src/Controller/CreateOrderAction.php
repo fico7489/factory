@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Entity\User;
-use App\Service\OrderPlacer;
+use App\Service\Order\OrderPlacer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;

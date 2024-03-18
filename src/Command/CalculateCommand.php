@@ -5,7 +5,7 @@ namespace App\Command;
 use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Service\ProductPriceUserFetcher;
+use App\Service\Order\Price\ProductPriceUserFetcher;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

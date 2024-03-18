@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Discount\Interface;
+namespace App\Service\Order\Discount\Interface;
 
 use App\Entity\Order;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;

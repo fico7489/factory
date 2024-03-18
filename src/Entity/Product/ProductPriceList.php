@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
     ],
 )]
 #[ORM\Entity]
+#[ORM\Index(name: 'search', columns: ['user_group_id', 'sku'], options: [])]
 class ProductPriceList
 {
     #[ORM\Id]

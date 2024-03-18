@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Service\Order;
+namespace App\Service\Order\Price;
 
 use App\Entity\Order;
-use App\Service\ProductPriceUserFetcher;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ProductPriceCreator

@@ -3,7 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\User;
-use App\Service\UserPricesCalculator;
+use App\Service\Order\Price\UserPricesCalculator;
 use App\Tests\Service\OrderPlacer\TestCaseOrderPlacer;
 use Ramsey\Uuid\Uuid;
 

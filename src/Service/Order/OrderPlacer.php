@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Order;
 
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
-use App\Service\Discount\Applicator\DiscountApplicator;
-use App\Service\Order\OrderCreator;
-use App\Service\Order\OrderItemCreator;
-use App\Service\Order\ProductPriceCreator;
-use App\Service\Tax\Applicator\TaxApplicator;
+use App\Service\Order\Discount\Applicator\DiscountApplicator;
+use App\Service\Order\Price\ProductPriceCreator;
+use App\Service\Order\Tax\Applicator\TaxApplicator;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OrderPlacer

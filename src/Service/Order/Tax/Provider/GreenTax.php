@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Service\Tax\Provider;
+namespace App\Service\Order\Tax\Provider;
 
 use App\Entity\Category;
 use App\Entity\Order;
-use App\Service\Tax\Interface\TaxInterface;
+use App\Service\Order\Tax\Interface\TaxInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class GreenTax implements TaxInterface

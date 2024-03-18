@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Service\Discount\Applicator;
+namespace App\Service\Order\Tax\Applicator;
 
 use App\Entity\Order;
-use App\Service\Discount\Interface\DiscountInterface;
+use App\Service\Order\Tax\Interface\TaxInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
-class DiscountApplicator
+class TaxApplicator
 {
     public function __construct(
-        #[TaggedIterator('app.discount.provider')] private readonly iterable $providers,
+        #[TaggedIterator('app.tax.provider')] private readonly iterable $providers,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -17,12 +19,11 @@ class DiscountApplicator
     {
         // set default
         foreach ($order->getOrderItems() as $orderItem) {
-            $orderItem->setDiscountGlobal(0);
-            $orderItem->setDiscountItem(0);
+            $orderItem->setTax(0);
         }
 
         foreach ($this->providers as $provider) {
-            /** @var DiscountInterface $provider */
+            /** @var TaxInterface $provider */
             if ($provider->match($order)) {
                 $provider->apply($order);
             }

@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace App\Service\Log;
+namespace App\Service\Util\Log;
 
 use Monolog\Formatter\FormatterInterface;
 use Monolog\LogRecord;
 
-class Formatter implements FormatterInterface
+class DoctrineSqlFormatter implements FormatterInterface
 {
     public function format(LogRecord $record)
     {
