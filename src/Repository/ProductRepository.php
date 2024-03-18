@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Service\Paginator\Paginator;
-use App\Service\Product\ProductSql;
+use App\Service\Paginator\Product\ProductSql;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,22 +21,25 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findByFilters(array $filters, array $sorts)
+    public function paginateByFilters($filterData): array
     {
-        $sqlParams = [];
+        /** @var User $user */
+        $user = $this->security->getUser();
+
+        //prepare price where
+        $userId = $user->getUserIdentifier();
+        $userGroupIds = $this->productSql->prepareUserGroupIds($user);
 
         // prepare filters
+        $sqlParams = [];
+        $filters = $filterData['filters'] ?? [];
         $sqlFilterName = $this->productSql->prepareNameFilter($filters, $sqlParams);
         $sqlFilterCategory = $this->productSql->prepareCategoryFilter($filters, $sqlParams);
         $sqlFilterPrice = $this->productSql->preparePriceFilter($filters, $sqlParams);
 
         // prepare sorts
+        $sorts = $filterData['sorts'] ?? [];
         $sqlSort = $this->productSql->prepareSqlSort($sorts);
-
-        /** @var User $user */
-        $user = $this->security->getUser();
-        $userId = $user->getUserIdentifier();
-        $userGroupIds = $this->prepareUserGroupIds($user);
 
         $sql = '
         SELECT
@@ -66,18 +69,5 @@ class ProductRepository extends ServiceEntityRepository
         $products = $this->paginator->paginate(Product::class, $sql, $sqlParams);
 
         return $products;
-    }
-
-    private function prepareUserGroupIds(User $user): string
-    {
-        $userGroups = $user->getUserGroups()->toArray();
-
-        $userGroupIds = [-1];
-        foreach ($userGroups as $userGroup) {
-            $userGroupIds[] = $userGroup->getId();
-        }
-        $userGroupIds = implode(',', $userGroupIds);
-
-        return $userGroupIds;
     }
 }

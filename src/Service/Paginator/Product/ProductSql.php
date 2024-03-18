@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Product;
+namespace App\Service\Paginator\Product;
 
 use App\Entity\User;
 
