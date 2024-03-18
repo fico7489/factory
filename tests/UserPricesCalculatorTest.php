@@ -5,10 +5,7 @@ namespace App\Tests;
 use App\Entity\User;
 use App\Service\UserPricesCalculator;
 use App\Tests\Service\OrderPlacer\TestCaseOrderPlacer;
-use Doctrine\ORM\Tools\SchemaTool;
 use Ramsey\Uuid\Uuid;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
 
 class UserPricesCalculatorTest extends TestCaseOrderPlacer
 {
@@ -32,7 +29,7 @@ class UserPricesCalculatorTest extends TestCaseOrderPlacer
         /** @var UserPricesCalculator $userPricesCalculator */
         $userPricesCalculator = $this->container->get(UserPricesCalculator::class);
 
-        $pricesArray =  $userPricesCalculator->calculate($user);
+        $pricesArray = $userPricesCalculator->calculate($user);
         $pricesArray = array_splice($pricesArray, 0, 10);
 
         dd($pricesArray);
@@ -42,15 +39,15 @@ class UserPricesCalculatorTest extends TestCaseOrderPlacer
 
     private function prepareData(User $user)
     {
-        //create 1000 users
-        for ($i=0 ; $i < 10; $i++){
+        // create 1000 users
+        for ($i = 0; $i < 10; ++$i) {
             $user = $this->dataProvider->createUser(false);
         }
 
-        //create 20k products
-        for ($i=0 ; $i < 10000; $i++){
+        // create 20k products
+        for ($i = 0; $i < 10000; ++$i) {
             $sku = Uuid::uuid4();
-            $price = rand(1, 100000) .'.' . rand(1, 99);
+            $price = rand(1, 100000).'.'.rand(1, 99);
 
             $this->dataProvider->createProduct($price, $sku, null, false);
         }

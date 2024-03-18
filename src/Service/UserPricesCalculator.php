@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Order;
 use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\Product;
 use App\Entity\User;
@@ -12,7 +11,7 @@ class UserPricesCalculator
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly  ProductPriceUserFetcher $productPriceUserFetcher
+        private readonly ProductPriceUserFetcher $productPriceUserFetcher
     ) {
     }
 
@@ -22,7 +21,7 @@ class UserPricesCalculator
 
         /** @var OrderItemPrice[] $prices */
         $prices = [];
-        foreach ($products as $product){
+        foreach ($products as $product) {
             $price = $this->productPriceUserFetcher->fetch($user, $product);
 
             $prices[$product->getId()] = $price->getPrice();
@@ -30,6 +29,6 @@ class UserPricesCalculator
 
         sort($prices, SORT_NUMERIC);
 
-        return ($prices);
+        return $prices;
     }
 }

@@ -2,12 +2,8 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\Category;
-use App\Entity\Product;
 use App\Entity\User;
 use App\Tests\TestCase;
-use Doctrine\Common\Collections\ArrayCollection;
-use Ramsey\Uuid\Uuid;
 
 class AuthControllerTest extends TestCase
 {
@@ -23,8 +19,8 @@ class AuthControllerTest extends TestCase
         $response = $this->client->request('POST', '/api/login_check', [
             'json' => [
                 'username' => 'example@example.com',
-                'password' => 'secret'
-            ]
+                'password' => 'secret',
+            ],
         ]);
         $this->assertResponseStatusCodeSame(200);
         $this->assertNotNull($response->toArray()['token']);
@@ -32,8 +28,8 @@ class AuthControllerTest extends TestCase
         $response = $this->client->request('POST', '/api/login_check', [
             'json' => [
                 'username' => 'example@example.com',
-                'password' => 'secret2'
-            ]
+                'password' => 'secret2',
+            ],
         ]);
         $this->assertResponseStatusCodeSame(401);
     }

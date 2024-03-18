@@ -45,6 +45,8 @@ class Product
     #[ORM\Column(type: 'float')]
     private ?float $price = null;
 
+    private ?float $priceAdjusted = null;
+
     #[ORM\Column(type: 'string')]
     private ?string $sku = null;
 
@@ -96,6 +98,16 @@ class Product
     public function setPrice(?float $price): void
     {
         $this->price = $price;
+    }
+
+    public function getPriceAdjusted(): ?float
+    {
+        return $this->priceAdjusted;
+    }
+
+    public function setPriceAdjusted(?float $priceAdjusted): void
+    {
+        $this->priceAdjusted = $priceAdjusted;
     }
 
     public function getSku(): ?string

@@ -18,15 +18,15 @@ class Formatter implements FormatterInterface
 {
     public function format(LogRecord $record)
     {
-        if (($record->context['sql'] ?? null)) {
+        if ($record->context['sql'] ?? null) {
             $sql = $record->context['sql'];
 
             $parameters = $record->context['params'] ?? [];
 
             $sql = $this->populateSql($sql, $parameters);
-            $sql = "\n" . \SqlFormatter::format($sql, false) . "\n";
+            $sql = "\n".\SqlFormatter::format($sql, false)."\n";
 
-            //echo \SqlFormatter::format($sql);exit;
+            // echo \SqlFormatter::format($sql);exit;
 
             return $sql;
         }
@@ -36,13 +36,12 @@ class Formatter implements FormatterInterface
 
     public function formatBatch(array $records)
     {
-
     }
 
     private function populateSql(string $sql, array $params): string
     {
         foreach ($params as $value) {
-            $sql = preg_replace('[\?]', "'" . $value . "'", $sql, 1);
+            $sql = preg_replace('[\?]', "'".$value."'", $sql, 1);
         }
 
         return $sql;

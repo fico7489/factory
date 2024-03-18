@@ -39,13 +39,13 @@ class DataProvider
         $user->setEmail('test@example.com');
         $user->setPassword('secret');
 
-        if($userGroup){
+        if ($userGroup) {
             $user->setUserGroups(new ArrayCollection([$userGroup]));
         }
 
         $this->entityManager->persist($user);
 
-        if($flush){
+        if ($flush) {
             $this->entityManager->flush();
         }
 
@@ -57,7 +57,7 @@ class DataProvider
         $userGroup = new UserGroup();
         $userGroup->setName($name);
         $this->entityManager->persist($userGroup);
-        if($flush){
+        if ($flush) {
             $this->entityManager->flush();
         }
 
@@ -87,14 +87,14 @@ class DataProvider
         }
 
         $this->entityManager->persist($product);
-        if($flush){
+        if ($flush) {
             $this->entityManager->flush();
         }
 
         return $product;
     }
 
-    public function createContractList(User $user, string $sku, float $price,  bool $flush = true): Product\ProductContractList
+    public function createContractList(User $user, string $sku, float $price, bool $flush = true): Product\ProductContractList
     {
         $contractList = new Product\ProductContractList();
         $contractList->setSku($sku);
@@ -102,21 +102,21 @@ class DataProvider
         $contractList->setUser($user);
 
         $this->entityManager->persist($contractList);
-        if($flush){
+        if ($flush) {
             $this->entityManager->flush();
         }
 
         return $contractList;
     }
 
-    public function createPriceList(UserGroup $userGroup, string $sku, float $price,  bool $flush = true): Product\ProductPriceList
+    public function createPriceList(UserGroup $userGroup, string $sku, float $price, bool $flush = true): Product\ProductPriceList
     {
         $priceList = new Product\ProductPriceList();
         $priceList->setPrice($price);
         $priceList->setSku($sku);
         $priceList->setUserGroup($userGroup);
         $this->entityManager->persist($priceList);
-        if($flush){
+        if ($flush) {
             $this->entityManager->flush();
         }
 

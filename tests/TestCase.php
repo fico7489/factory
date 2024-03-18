@@ -43,7 +43,7 @@ class TestCase extends ApiTestCase
     {
         $application = new Application(self::$kernel);
         $application->setAutoExit(false);
-        //$application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
+        // $application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
 
         $metaData = $this->entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($this->entityManager);
@@ -57,7 +57,7 @@ class TestCase extends ApiTestCase
         $this->entityManager->flush();
     }
 
-    protected function asUser(User $user = null): void
+    protected function asUser(?User $user = null): void
     {
         /** @var JWTTokenManagerInterface $tokenManager */
         $tokenManager = $this->container->get(JWTTokenManagerInterface::class);
@@ -66,16 +66,25 @@ class TestCase extends ApiTestCase
 
         $this->client->setDefaultOptions([
             'headers' => [
-                'Authorization' => 'Bearer ' . $token,
+                'Authorization' => 'Bearer '.$token,
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
     }
 
-    protected function asUserId( int $userId): void
+    protected function asUserId(int $userId): void
     {
         $user = $this->entityManager->getRepository(User::class)->find($userId);
 
         $this->asUser($user);
+    }
+
+    private function save($entities)
+    {
+        foreach ($entities as $entity) {
+            $this->entityManager->persist($entity);
+        }
+
+        $this->entityManager->flush();
     }
 }
