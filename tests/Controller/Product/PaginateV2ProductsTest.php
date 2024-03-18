@@ -20,13 +20,13 @@ class PaginateV2ProductsTest extends TestCase
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(100, $data['priceAdjusted']);
 
-        // test matching price_adjusted, 100 for second user
+        // test matching price_adjusted, 99 for second user
         $this->asUser($userSecond);
         $response = $this->client->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc');
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(99, $data['priceAdjusted']);
 
-        // test matching price_adjusted, 100 for first user
+        // test matching price_adjusted, 98 for first user
         $this->asUser($userFirst);
         $response = $this->client->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc');
         $data = $response->toArray()['data'][0]['attributes'];
@@ -71,6 +71,11 @@ class PaginateV2ProductsTest extends TestCase
         $this->asUser($userFirst);
         $response = $this->client->request('GET', '/api/v2/products?filters[][category][equals]='.$categoryOneOne->getId());
         $this->assertEquals(2, count($response->toArray()['data']));
+
+        // test filter -> by price
+        $this->asUser($userFirst);
+        $response = $this->client->request('GET', '/api/v2/products?filters[][price][lte]=99.2');
+        $this->assertEquals(1, count($response->toArray()['data']));
     }
 
     private function prepareProducts(): array

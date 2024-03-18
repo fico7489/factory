@@ -22,8 +22,9 @@ class ProductRepository extends ServiceEntityRepository
         $sqlParams = [];
 
         // filter
-        $nameFilter = $this->prepareNameFilter($filters, $sqlParams);
-        $categoryFilter = $this->prepareCategoryFilter($filters, $sqlParams);
+        $sqlFilterName = $this->prepareNameFilter($filters, $sqlParams);
+        $sqlFilterCategory = $this->prepareCategoryFilter($filters, $sqlParams);
+        $sqlFilterPrice = $this->preparePriceFilter($filters, $sqlParams);
 
         // sort
         $sqlSort = $this->prepareSqlSort($sorts);
@@ -51,8 +52,9 @@ class ProductRepository extends ServiceEntityRepository
             FROM
             product p
         WHERE 1 = 1
-        '.$categoryFilter.'
-        '.$nameFilter.'
+        '.$sqlFilterCategory.'
+        '.$sqlFilterName.'
+        '.$sqlFilterPrice.'
         '.$sqlSort.'
         LIMIT
             10
@@ -112,6 +114,17 @@ class ProductRepository extends ServiceEntityRepository
         $sqlSort = ' ORDER BY '.implode(',', $sqlSort);
 
         return $sqlSort;
+    }
+
+    private function preparePriceFilter(array $filters, array &$sqlParams): string
+    {
+        if (!empty($value = $filters[0]['price']['lte'] ?? null)) {
+            $sqlParams['price'] = $value;
+
+            return ' HAVING price_adjusted < :price';
+        }
+
+        return '';
     }
 
     private function prepareCategoryFilter(array $filters, array &$sqlParams): string
