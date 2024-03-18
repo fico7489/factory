@@ -4,14 +4,12 @@ namespace App\Service\Order\Tax\Applicator;
 
 use App\Entity\Order;
 use App\Service\Order\Tax\Interface\TaxInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 class TaxApplicator
 {
     public function __construct(
         #[TaggedIterator('app.tax.provider')] private readonly iterable $providers,
-        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
