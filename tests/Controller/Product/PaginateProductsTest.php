@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controller\Product;
 
 use App\Entity\Category;
 use App\Entity\Product;
@@ -11,6 +11,30 @@ use Ramsey\Uuid\Uuid;
 class PaginateProductsTest extends TestCase
 {
     public function testService(): void
+    {
+        $this->asUserId(1);
+
+        $this->prepareProducts();
+
+        $response = $this->client->request('GET', '/api/products/1');
+        $this->assertEquals('/api/products/1', $response->toArray()['data']['id']);
+
+        $response = $this->client->request('GET', '/api/products');
+
+        $this->assertEquals(10, count($response->toArray()['data']));
+        $this->assertEquals(25, $response->toArray()['meta']['totalItems']);
+
+        $response = $this->client->request('GET', '/api/category/1/products/');
+        $this->assertEquals(2, count($response->toArray()['data']));
+
+        $response = $this->client->request('GET', '/api/category/2/products/');
+        $this->assertEquals(1, count($response->toArray()['data']));
+
+        $response = $this->client->request('GET', '/api/category/3/products/');
+        $this->assertEquals(2, count($response->toArray()['data']));
+    }
+
+    private function prepareProducts()
     {
         $categoryOne = new Category();
         $categoryOne->setName('One');
@@ -45,24 +69,10 @@ class PaginateProductsTest extends TestCase
             } elseif (4 === $i) {
                 $product->setCategories(new ArrayCollection([$categoryOne, $categoryTwo]));
             }
-
+            $product->setCategories(new ArrayCollection([$categoryOne]));
             $this->entityManager->persist($product);
         }
 
         $this->entityManager->flush();
-
-        $response = $this->client->request('GET', '/api/products', ['headers' => ['Accept' => 'application/vnd.api+json']]);
-
-        $this->assertEquals(10, count($response->toArray()['data']));
-        $this->assertEquals(25, $response->toArray()['meta']['totalItems']);
-
-        $response = $this->client->request('GET', '/api/category/1/products/', ['headers' => ['Accept' => 'application/vnd.api+json']]);
-        $this->assertEquals(2, count($response->toArray()['data']));
-
-        $response = $this->client->request('GET', '/api/category/2/products/', ['headers' => ['Accept' => 'application/vnd.api+json']]);
-        $this->assertEquals(1, count($response->toArray()['data']));
-
-        $response = $this->client->request('GET', '/api/category/3/products/', ['headers' => ['Accept' => 'application/vnd.api+json']]);
-        $this->assertEquals(2, count($response->toArray()['data']));
     }
 }

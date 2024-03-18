@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
+use App\DataProvider\ProductsDataProvider;
 use App\Entity\Order\OrderItem;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,13 +14,17 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource(
     operations: [
+        new Get(),
         new GetCollection(),
         new GetCollection(
             uriTemplate: 'category/{category}/products/',
-            // provider: ProductsPerCategoryProvider::class,
             uriVariables: [
                 'category' => new Link(toClass: Category::class, identifiers: ['id']),
             ],
+        ),
+        new GetCollection(
+            uriTemplate: '/v2/products',
+            provider: ProductsDataProvider::class,
         ),
     ],
 )]

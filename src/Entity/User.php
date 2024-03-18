@@ -3,12 +3,15 @@
 namespace App\Entity;
 
 use App\Entity\Product\ProductContractList;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity]
-class User
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+class User  implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -116,5 +119,20 @@ class User
     public function setOrders(Collection $orders): void
     {
         $this->orders = $orders;
+    }
+
+    public function getRoles(): array
+    {
+        return [];
+    }
+
+    public function eraseCredentials(): void
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->getId();
     }
 }

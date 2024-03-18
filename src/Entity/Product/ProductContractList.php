@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\Index(name: 'search', columns: ['user_id', 'sku'])]
 class ProductContractList
 {
     #[ORM\Id]

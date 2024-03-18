@@ -15,11 +15,13 @@ class OrderItemPrice
     public const TYPE_CONTRACT_LIST = 'contract_list';
 
     public function __construct(
+        int $productId,
         float $price,
         string $type,
         ?ProductPriceList $priceList = null,
         ?ProductContractList $contractList = null,
     ) {
+        $this->productId = $productId;
         $this->price = $price;
         $this->type = $type;
         $this->priceList = $priceList;
@@ -32,6 +34,7 @@ class OrderItemPrice
     private ?int $id = null;
 
     private float $price;
+    private int $productId;
 
     #[ORM\Column(type: 'string')]
     private ?string $type = null;
@@ -58,6 +61,16 @@ class OrderItemPrice
     public function setPrice(float $price): void
     {
         $this->price = $price;
+    }
+
+    public function getProductId(): int
+    {
+        return $this->productId;
+    }
+
+    public function setProductId(int $productId): void
+    {
+        $this->productId = $productId;
     }
 
     public function getType(): ?string

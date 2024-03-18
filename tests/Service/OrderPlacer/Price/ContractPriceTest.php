@@ -10,11 +10,9 @@ class ContractPriceTest extends TestCaseOrderPlacer
 {
     public function testService(): void
     {
-        $user = $this->dataProvider->createUser();
-        $product = $this->dataProvider->createProduct(19, 'test');
-
         $userGroup = $this->dataProvider->createUserGroup();
-        $this->dataProvider->attachUserGroupToUser($userGroup, $user);
+        $user = $this->dataProvider->createUser($userGroup);
+        $product = $this->dataProvider->createProduct(19, 'test');
 
         $priceList = $this->dataProvider->createPriceList($userGroup, 'test', 18);
 

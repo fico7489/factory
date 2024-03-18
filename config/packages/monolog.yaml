@@ -5,3 +5,10 @@ monolog:
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
 
+        doctrine:
+            channels : ['doctrine']
+            type: stream
+            path: "%kernel.logs_dir%/doctrine_%kernel.environment%.log"
+            level: debug
+            formatter: App\Service\Log\Formatter
+

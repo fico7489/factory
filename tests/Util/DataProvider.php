@@ -33,34 +33,35 @@ class DataProvider
         return $data;
     }
 
-    public function createUser(): User
+    public function createUser(?UserGroup $userGroup = null, bool $flush = true): User
     {
         $user = new User();
         $user->setEmail('test@example.com');
         $user->setPassword('secret');
+
+        if($userGroup){
+            $user->setUserGroups(new ArrayCollection([$userGroup]));
+        }
+
         $this->entityManager->persist($user);
-        $this->entityManager->flush();
+
+        if($flush){
+            $this->entityManager->flush();
+        }
 
         return $user;
     }
 
-    public function createUserGroup(string $name = 'user_group_test'): UserGroup
+    public function createUserGroup(string $name = 'user_group_test', bool $flush = true): UserGroup
     {
         $userGroup = new UserGroup();
         $userGroup->setName($name);
         $this->entityManager->persist($userGroup);
-        $this->entityManager->flush();
+        if($flush){
+            $this->entityManager->flush();
+        }
 
         return $userGroup;
-    }
-
-    public function attachUserGroupToUser(UserGroup $userGroup, User $user): User
-    {
-        $user->setUserGroups(new ArrayCollection([$userGroup]));
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return $user;
     }
 
     public function createCategory($name = 'Test'): Category
@@ -73,24 +74,27 @@ class DataProvider
         return $category;
     }
 
-    public function createProduct(float $price, string $sku = 'test', ?Category $category = null): Product
+    public function createProduct(float $price, string $sku = 'test', ?Category $category = null, bool $flush = true): Product
     {
         $product = new Product();
         $product->setName('test');
         $product->setPrice($price);
         $product->setSku($sku);
+        $product->setPublished(true);
 
         if ($category) {
             $product->setCategories(new ArrayCollection([$category]));
         }
 
         $this->entityManager->persist($product);
-        $this->entityManager->flush();
+        if($flush){
+            $this->entityManager->flush();
+        }
 
         return $product;
     }
 
-    public function createContractList(User $user, string $sku, float $price): Product\ProductContractList
+    public function createContractList(User $user, string $sku, float $price,  bool $flush = true): Product\ProductContractList
     {
         $contractList = new Product\ProductContractList();
         $contractList->setSku($sku);
@@ -98,19 +102,23 @@ class DataProvider
         $contractList->setUser($user);
 
         $this->entityManager->persist($contractList);
-        $this->entityManager->flush();
+        if($flush){
+            $this->entityManager->flush();
+        }
 
         return $contractList;
     }
 
-    public function createPriceList(UserGroup $userGroup, string $sku, float $price): Product\ProductPriceList
+    public function createPriceList(UserGroup $userGroup, string $sku, float $price,  bool $flush = true): Product\ProductPriceList
     {
         $priceList = new Product\ProductPriceList();
         $priceList->setPrice($price);
         $priceList->setSku($sku);
         $priceList->setUserGroup($userGroup);
         $this->entityManager->persist($priceList);
-        $this->entityManager->flush();
+        if($flush){
+            $this->entityManager->flush();
+        }
 
         return $priceList;
     }

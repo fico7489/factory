@@ -11,5 +11,7 @@ services:
             - '../src/Kernel.php'
 
 
+    App\Service\Log\Formatter:
+        public: true
 
 
