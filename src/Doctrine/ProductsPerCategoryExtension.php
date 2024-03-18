@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ArchivedExtension implements QueryCollectionExtensionInterface
+class ProductsPerCategoryExtension implements QueryCollectionExtensionInterface
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,

@@ -6,14 +6,12 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Events;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsDoctrineListener(event: Events::prePersist)]
 class UserCreationListener
 {
     public function __construct(
-        private readonly ParameterBagInterface $parameterBag,
         private readonly UserPasswordHasherInterface $passwordHasher
     ) {
     }
