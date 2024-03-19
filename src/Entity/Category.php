@@ -70,7 +70,6 @@ class Category
         $this->parent = $parent;
     }
 
-
     public function getChildren(): Collection
     {
         return $this->children;

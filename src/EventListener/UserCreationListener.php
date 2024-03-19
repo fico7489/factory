@@ -26,6 +26,11 @@ class UserCreationListener
             return;
         }
 
-        $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
+        if (!($passwordHashed = (self::$passwords[$user->getPassword()] ?? null))) {
+            $passwordHashed = $this->passwordHasher->hashPassword($user, $user->getPassword());
+            self::$passwords[$user->getPassword()] = $passwordHashed;
+        }
+
+        $user->setPassword($passwordHashed);
     }
 }

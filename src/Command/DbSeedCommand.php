@@ -14,8 +14,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'app:seed-speed')]
-class SeedSpeedCommand extends Command
+#[AsCommand(name: 'app:db:seed')]
+class DbSeedCommand extends Command
 {
     private DataProvider $dataProvider;
 
@@ -37,7 +37,7 @@ class SeedSpeedCommand extends Command
         $productSkus = $this->prepareProducts($io, $categories);
 
         $this->prepareContractList($io, $userIds, $productSkus);
-        // $this->preparePriceList($io, $userGroups, $productSkus);
+        $this->preparePriceList($io, $userGroups, $productSkus);
 
         return Command::SUCCESS;
     }
@@ -79,14 +79,14 @@ class SeedSpeedCommand extends Command
         $users[] = $this->dataProvider->createUser([$userGroupGold], 'gold@example.com', false);
         $users[] = $this->dataProvider->createUser([$userGroupRepairman, $userGroupGold], 'gold_and_repairman@example.com', false);
 
-        $count = 1000;
+        $count = 100;
 
         // create 1000 users
         $io->writeln("\n".'Users');
         $bar = $io->createProgressBar($count);
 
         for ($i = 0; $i < $count; ++$i) {
-            $users[] = $this->dataProvider->createUser($userGroups[array_rand($userGroups)], false);
+            $users[] = $this->dataProvider->createUser([$userGroups[array_rand($userGroups)]], false);
             $bar->advance();
         }
 
@@ -104,6 +104,8 @@ class SeedSpeedCommand extends Command
 
     private function prepareCategories(SymfonyStyle $io): array
     {
+        $io->writeln("\n".'Categories');
+
         $categories = [];
         $categories[] = $this->dataProvider->createCategory('PC');
         $categories[] = $this->dataProvider->createCategory('Laptop', $categories[0]);
@@ -121,9 +123,15 @@ class SeedSpeedCommand extends Command
     private function prepareProducts(SymfonyStyle $io, array $categories): array
     {
         $productSkus = [];
-        $productSkus[] = $this->dataProvider->createProduct(1500, 'aaaa-1111', 'LENOVO ThinkPad T14s', null, false)->getSku();
+        $productSkus[] = $this->dataProvider->createProduct(1500, 'aaaa-1111', 'LENOVO ThinkPad T14s', [$categories[2], $categories[3]], false)->getSku();
+        $productSkus[] = $this->dataProvider->createProduct(1600, 'aaaa-2222', 'ACER Aspire 3 NX.ADDEX', [$categories[3]], false)->getSku();
+        $productSkus[] = $this->dataProvider->createProduct(1700, 'aaaa-3333', 'Laptop ACER Nitro 5 NH.QH1EX.00V', [$categories[2]], false)->getSku();
+        $productSkus[] = $this->dataProvider->createProduct(1000, 'aaaa-4444', 'Samsung S23', [$categories[6]], false)->getSku();
+        $productSkus[] = $this->dataProvider->createProduct(1100, 'aaaa-5555', 'Samsung S24', [$categories[6]], false)->getSku();
+        $productSkus[] = $this->dataProvider->createProduct(1100, 'aaaa-6666', 'Charger USB3 - UNIVERSAL', [$categories[7]], false)->getSku();
+        $productSkus[] = $this->dataProvider->createProduct(1100, 'aaaa-7777', 'Monitor 31.5" ACER Nitro XV322Q', [$categories[8]], false)->getSku();
 
-        $count = 2000;
+        $count = 100;
 
         $io->writeln("\n".'Products');
         // create 20k products
@@ -132,7 +140,7 @@ class SeedSpeedCommand extends Command
         for ($i = 0; $i < $count; ++$i) {
             $sku = Uuid::uuid4();
             $price = rand(1, 100000).'.'.rand(1, 99);
-            $productSkus[] = $this->dataProvider->createProduct($price, $sku, 'test', null, false)->getSku();
+            $productSkus[] = $this->dataProvider->createProduct($price, $sku, 'test', [$categories[array_rand($categories)]], false)->getSku();
             $bar->advance();
         }
 

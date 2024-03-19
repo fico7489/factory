@@ -5,10 +5,13 @@ monolog:
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
 
-        doctrine:
-            channels : ['doctrine']
-            type: stream
-            path: "%kernel.logs_dir%/doctrine_%kernel.environment%.log"
-            level: debug
-            formatter: App\Service\Util\Log\DoctrineSqlFormatter
+when@test:
+    monolog:
+        handlers:
+            doctrine:
+                channels : ['doctrine']
+                type: stream
+                path: "%kernel.logs_dir%/doctrine_%kernel.environment%.log"
+                level: debug
+                formatter: App\Service\Util\Log\DoctrineSqlFormatter
 
