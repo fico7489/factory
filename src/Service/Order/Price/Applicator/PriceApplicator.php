@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Service\Order\Price;
+namespace App\Service\Order\Price\Applicator;
 
 use App\Entity\Order;
+use App\Service\Order\Price\Fetcher\OrderItemPriceFetcher;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ProductPriceCreator
+class PriceApplicator
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly ProductPriceUserFetcher $productPriceUserFetcher,
+        private readonly OrderItemPriceFetcher $productPriceUserFetcher,
     ) {
     }
 
-    // create a fresh order (like cart)
-    public function create(Order $order): Order
+    public function apply(Order $order): Order
     {
         foreach ($order->getOrderItems() as $orderItem) {
             if ($orderItem->getOrderPriceItem()) {

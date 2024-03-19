@@ -50,9 +50,6 @@ class DbSeedCommand extends Command
         $categories = $this->prepareCategories($io);
         $productSkus = $this->prepareProducts($io, $countProduct, $categories);
 
-        $this->entityManager->flush();
-        $this->entityManager->clear();
-
         $this->prepareContractList($io, $userIds, $productSkus);
         $this->preparePriceList($io, $userGroups, $productSkus);
 
@@ -225,7 +222,6 @@ class DbSeedCommand extends Command
         }
 
         $this->entityManager->flush();
-        $this->entityManager->clear();
 
         file_put_contents('.docker/mysql/data/product_contract_list.txt', $items);
 

@@ -6,7 +6,7 @@ use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Service\Order\Discount\Applicator\DiscountApplicator;
-use App\Service\Order\Price\ProductPriceCreator;
+use App\Service\Order\Price\Applicator\PriceApplicator;
 use App\Service\Order\Tax\Applicator\TaxApplicator;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -16,8 +16,8 @@ class OrderPlacer
         private readonly OrderCreator $orderCreator,
         private readonly OrderItemCreator $orderItemCreator,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ProductPriceCreator $productPriceCreator,
-        private readonly DiscountApplicator $applicator,
+        private readonly PriceApplicator $priceApplicator,
+        private readonly DiscountApplicator $discountApplicator,
         private readonly TaxApplicator $taxApplicator,
     ) {
     }
@@ -33,13 +33,15 @@ class OrderPlacer
 
             $this->orderItemCreator->create($order, $product, $quantity);
         }
+
+        // refresh order
         $this->entityManager->refresh($order);
 
-        // apply price adjustments
-        $this->productPriceCreator->create($order);
+        // apply price
+        $this->priceApplicator->apply($order);
 
         // apply discounts
-        $this->applicator->apply($order);
+        $this->discountApplicator->apply($order);
 
         // apply taxes
         $this->taxApplicator->apply($order);

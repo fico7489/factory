@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service\Order\Price;
+namespace App\Service\Order\Price\Fetcher;
 
 use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ProductPriceUserFetcher
+class OrderItemPriceFetcher
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
