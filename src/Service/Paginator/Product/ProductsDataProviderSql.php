@@ -4,7 +4,7 @@ namespace App\Service\Paginator\Product;
 
 use App\Entity\Product;
 use App\Entity\User;
-use App\Service\Paginator\Helper\StatementConverter;
+use App\Service\Paginator\Helper\ResultsToEntitiesConverter;
 use App\Service\Paginator\Interface\DataProviderInterface;
 use App\Service\Paginator\Product\Sql\ProductSqlHelper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,17 +16,52 @@ class ProductsDataProviderSql implements DataProviderInterface
         private readonly EntityManagerInterface $entityManager,
         private readonly Security $security,
         private readonly ProductSqlHelper $productSqlHelper,
-        private readonly StatementConverter $paginatorHelper,
+        private readonly ResultsToEntitiesConverter $resultsToEntitiesConverter,
     ) {
     }
 
-    public function paginate(array $filterData, int $limit, int $offset): array
+    public function count(array $filterData): int
+    {
+        $results = $this->getResults($filterData, 0, 0, true);
+
+        $count = $results[0]['count(*)'] ?? 0;
+
+        return $count;
+    }
+
+    public function entities(array $filterData, int $limit, int $offset): array
+    {
+        $results = $this->getResults($filterData, $limit, $offset, false);
+
+        $results = $this->resultsToEntitiesConverter->convert(Product::class, $results);
+
+        // set price_adjusted to entity
+        $products = [];
+        foreach ($results as $result) {
+            /* @var Product $product */
+            $product = $result['entity'];
+
+            $product->setPriceAdjusted($result['result']['price_adjusted']);
+
+            $products[] = $product;
+        }
+
+        return $products;
+    }
+
+    public function getResults(array $filterData, int $limit, int $offset, bool $count): array
     {
         /** @var User $user */
         $user = $this->security->getUser();
 
         // prepare select
         $sqlSelect = $this->productSqlHelper->prepareSelect($user);
+
+        // prepare limit offset
+        $sqlLimitOffset = ' LIMIT '.$limit.' OFFSET '.$offset.' ';
+        if ($count) {
+            $sqlLimitOffset = '';
+        }
 
         // prepare filters
         $sqlParams = [];
@@ -38,9 +73,6 @@ class ProductsDataProviderSql implements DataProviderInterface
         // prepare sorts
         $sorts = $filterData['sorts'] ?? [];
         $sqlSort = $this->productSqlHelper->prepareSqlSort($sorts);
-
-        // prepare limit offset
-        $sqlLimitOffset = ' LIMIT '.$limit.' OFFSET '.$offset.' ';
 
         // select min price from all 3 price sources(product, product_contract_list and product_price_list)
         $sql = '
@@ -55,6 +87,10 @@ class ProductsDataProviderSql implements DataProviderInterface
             '.$sqlLimitOffset.'
         ';
 
+        if ($count) {
+            $sql = ' SELECT count(*) FROM ('.$sql.') as count ';
+        }
+
         // prepare statement
         $stmt = $this->entityManager->getConnection()->prepare($sql);
 
@@ -63,18 +99,8 @@ class ProductsDataProviderSql implements DataProviderInterface
             $stmt->bindValue($name, $value);
         }
 
-        // set price_adjusted to entity
-        $results = $this->paginatorHelper->paginate(Product::class, $stmt, $sqlParams);
-        $products = [];
-        foreach ($results as $result) {
-            /* @var Product $product */
-            $product = $result['entity'];
+        $results = $stmt->executeQuery()->fetchAllAssociative();
 
-            $product->setPriceAdjusted($result['result']['price_adjusted']);
-
-            $products[] = $product;
-        }
-
-        return $products;
+        return $results;
     }
 }

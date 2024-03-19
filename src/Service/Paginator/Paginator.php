@@ -28,8 +28,10 @@ class Paginator
         $offset = ($currentPage - 1) * $itemsPerPage;
 
         $filterData = $validator->validate($context);
-        $entities = $dataProvider->paginate($filterData, $itemsPerPage, $offset);
 
-        return new TraversablePaginator(new \ArrayIterator($entities), $currentPage, $itemsPerPage, count($entities));
+        $entities = $dataProvider->entities($filterData, $itemsPerPage, $offset);
+        $count = $dataProvider->count($filterData);
+
+        return new TraversablePaginator(new \ArrayIterator($entities), $currentPage, $itemsPerPage, $count);
     }
 }
