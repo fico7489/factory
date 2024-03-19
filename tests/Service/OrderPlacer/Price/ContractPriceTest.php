@@ -2,6 +2,7 @@
 
 namespace App\tests\Service\OrderPlacer\Price;
 
+use App\Entity\Order;
 use App\Entity\Order\OrderItem;
 use App\Entity\Order\Price\OrderItemPrice;
 use App\Tests\Service\OrderPlacer\TestCaseOrderPlacer;
@@ -16,7 +17,7 @@ class ContractPriceTest extends TestCaseOrderPlacer
 
         $priceList = $this->dataProvider->createPriceList($userGroup, 'test', 18);
 
-        $order = $this->orderPlacer->placeOrder($user, [$product->getId() => 1]);
+        $order = $this->orderPlacer->placeOrder($user, new Order(), [$product->getId() => 1]);
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];

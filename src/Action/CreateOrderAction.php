@@ -19,12 +19,12 @@ class CreateOrderAction extends AbstractController
     ) {
     }
 
-    public function __invoke(Request $request): Order
+    public function __invoke(Request $request, Order $order): Order
     {
         /** @var User $user */
         $user = $this->security->getUser();
         $items = json_decode($request->getContent(), true)['items'] ?? [];
 
-        return $this->orderPlacer->placeOrder($user, $items);
+        return $this->orderPlacer->placeOrder($user, $order, $items);
     }
 }

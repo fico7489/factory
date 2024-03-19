@@ -2,6 +2,7 @@
 
 namespace App\tests\Service\OrderPlacer\Discount;
 
+use App\Entity\Order;
 use App\Entity\Order\OrderItem;
 use App\Entity\Order\Price\OrderItemPrice;
 use App\Tests\Service\OrderPlacer\TestCaseOrderPlacer;
@@ -13,7 +14,7 @@ class GlobalDiscountTest extends TestCaseOrderPlacer
         $user = $this->dataProvider->createUser();
         $product = $this->dataProvider->createProduct(50, 'test');
 
-        $order = $this->orderPlacer->placeOrder($user, [$product->getId() => 3]);
+        $order = $this->orderPlacer->placeOrder($user, new Order(), [$product->getId() => 3]);
 
         /** @var OrderItem $orderItem */
         $orderItem = $order->getOrderItems()[0];

@@ -25,6 +25,18 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $addressAddress = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $addressCity = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $addressCountry = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $addressPhone = null;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
     private User $user;
 
@@ -65,6 +77,46 @@ class Order
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getAddressAddress(): ?string
+    {
+        return $this->addressAddress;
+    }
+
+    public function setAddressAddress(?string $addressAddress): void
+    {
+        $this->addressAddress = $addressAddress;
+    }
+
+    public function getAddressCity(): ?string
+    {
+        return $this->addressCity;
+    }
+
+    public function setAddressCity(?string $addressCity): void
+    {
+        $this->addressCity = $addressCity;
+    }
+
+    public function getAddressCountry(): ?string
+    {
+        return $this->addressCountry;
+    }
+
+    public function setAddressCountry(?string $addressCountry): void
+    {
+        $this->addressCountry = $addressCountry;
+    }
+
+    public function getAddressPhone(): ?string
+    {
+        return $this->addressPhone;
+    }
+
+    public function setAddressPhone(?string $addressPhone): void
+    {
+        $this->addressPhone = $addressPhone;
     }
 
     public function getUser(): User

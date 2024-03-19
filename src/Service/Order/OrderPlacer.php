@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManagerInterface;
 class OrderPlacer
 {
     public function __construct(
-        private readonly OrderCreator $orderCreator,
         private readonly OrderItemCreator $orderItemCreator,
         private readonly EntityManagerInterface $entityManager,
         private readonly PriceApplicator $priceApplicator,
@@ -22,10 +21,13 @@ class OrderPlacer
     ) {
     }
 
-    public function placeOrder(User $user, array $items): Order
+    public function placeOrder(User $user, Order $order, array $items): Order
     {
         // create order
-        $order = $this->orderCreator->create($user);
+        $order->setUser($user);
+
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
 
         // create order items
         foreach ($items as $productId => $quantity) {
