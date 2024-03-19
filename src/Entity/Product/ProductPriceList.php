@@ -4,9 +4,7 @@ namespace App\Entity\Product;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\UserGroup;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource(
@@ -29,11 +27,8 @@ class ProductPriceList
     #[ORM\Column(type: 'string')]
     private ?string $sku = null;
 
-    #[ORM\ManyToOne(targetEntity: UserGroup::class, inversedBy: 'priceLists')]
+    #[ORM\ManyToOne(targetEntity: UserGroup::class)]
     private UserGroup $userGroup;
-
-    #[ORM\OneToMany(targetEntity: OrderItemPrice::class, mappedBy: 'priceList')]
-    private Collection $orderItemPrices;
 
     public function getId(): ?int
     {

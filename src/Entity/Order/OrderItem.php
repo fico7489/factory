@@ -47,12 +47,12 @@ class OrderItem
     private ?float $total = null;
 
     #[ORM\OneToOne(targetEntity: OrderItemPrice::class)]
-    private ?OrderItemPrice $priceItem = null;
+    private ?OrderItemPrice $orderPriceItem = null;
 
     #[ORM\ManyToOne(targetEntity: Order::class, inversedBy: 'orderItems')]
     private Order $order;
 
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'orderItems')]
+    #[ORM\ManyToOne(targetEntity: Product::class)]
     private Product $product;
 
     public function getId(): ?int
@@ -135,14 +135,14 @@ class OrderItem
         $this->total = $total;
     }
 
-    public function getPriceItem(): ?OrderItemPrice
+    public function getOrderPriceItem(): ?OrderItemPrice
     {
-        return $this->priceItem;
+        return $this->orderPriceItem;
     }
 
-    public function setPriceItem(?OrderItemPrice $priceItem): void
+    public function setOrderPriceItem(?OrderItemPrice $orderPriceItem): void
     {
-        $this->priceItem = $priceItem;
+        $this->orderPriceItem = $orderPriceItem;
     }
 
     public function getOrder(): Order

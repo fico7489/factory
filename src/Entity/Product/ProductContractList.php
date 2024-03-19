@@ -4,9 +4,7 @@ namespace App\Entity\Product;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use App\Entity\Order\Price\OrderItemPrice;
 use App\Entity\User;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ApiResource(
@@ -31,9 +29,6 @@ class ProductContractList
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'contractLists')]
     private User $user;
-
-    #[ORM\OneToMany(targetEntity: OrderItemPrice::class, mappedBy: 'contractList')]
-    private Collection $orderItemPrices;
 
     public function getId(): ?int
     {

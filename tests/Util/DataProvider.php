@@ -19,7 +19,7 @@ class DataProvider
     public function createUser($userGroups = [], $email = 'test@example.com', bool $flush = true): User
     {
         $user = new User();
-        $user->setEmail('test@example.com');
+        $user->setEmail($email);
         $user->setPassword('secret');
         $user->setUserGroups(new ArrayCollection($userGroups));
 

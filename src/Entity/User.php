@@ -37,7 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     protected ?string $password;
 
-    #[ORM\ManyToMany(targetEntity: UserGroup::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: UserGroup::class)]
     private Collection $userGroups;
 
     #[ORM\OneToMany(targetEntity: ProductContractList::class, mappedBy: 'user')]
@@ -51,6 +51,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userGroups = new ArrayCollection();
         $this->contractLists = new ArrayCollection();
         $this->orders = new ArrayCollection();
+    }
+
+    public function getRoles(): array
+    {
+        return [];
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->getId();
     }
 
     public function getId(): ?int
@@ -126,19 +140,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setOrders(Collection $orders): void
     {
         $this->orders = $orders;
-    }
-
-    public function getRoles(): array
-    {
-        return [];
-    }
-
-    public function eraseCredentials(): void
-    {
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->getId();
     }
 }

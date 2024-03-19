@@ -17,9 +17,9 @@ class ProductPriceCreator
     public function create(Order $order): Order
     {
         foreach ($order->getOrderItems() as $orderItem) {
-            if ($orderItem->getPriceItem()) {
+            if ($orderItem->getOrderPriceItem()) {
                 // clear old one if exists
-                $this->entityManager->remove($orderItem->getPriceItem());
+                $this->entityManager->remove($orderItem->getOrderPriceItem());
                 $this->entityManager->flush();
 
                 $this->entityManager->refresh($orderItem);
@@ -30,7 +30,7 @@ class ProductPriceCreator
             $this->entityManager->persist($productPriceUser);
             $this->entityManager->flush();
 
-            $orderItem->setPriceItem($productPriceUser);
+            $orderItem->setOrderPriceItem($productPriceUser);
             $orderItem->setPriceAdjusted($productPriceUser->getPrice());
             $orderItem->setSubtotal($orderItem->getPriceAdjusted() * $orderItem->getQuantity());
 

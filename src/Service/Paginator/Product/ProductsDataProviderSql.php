@@ -6,7 +6,7 @@ use App\Entity\Product;
 use App\Entity\User;
 use App\Service\Paginator\Helper\StatementConverter;
 use App\Service\Paginator\Interface\DataProviderInterface;
-use App\Service\Paginator\Product\Sql\SqlHelper;
+use App\Service\Paginator\Product\Sql\ProductSqlHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -15,7 +15,7 @@ class ProductsDataProviderSql implements DataProviderInterface
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly Security $security,
-        private readonly SqlHelper $productSql,
+        private readonly ProductSqlHelper $productSqlHelper,
         private readonly StatementConverter $paginatorHelper,
     ) {
     }
@@ -25,45 +25,34 @@ class ProductsDataProviderSql implements DataProviderInterface
         /** @var User $user */
         $user = $this->security->getUser();
 
-        // prepare price where
-        $userId = $user->getUserIdentifier();
-        $userGroupIds = $this->productSql->prepareUserGroupIds($user);
+        // prepare select
+        $sqlSelect = $this->productSqlHelper->prepareSelect($user);
 
         // prepare filters
         $sqlParams = [];
         $filters = $filterData['filters'] ?? [];
-        $sqlFilterName = $this->productSql->prepareNameFilter($filters, $sqlParams);
-        $sqlFilterCategory = $this->productSql->prepareCategoryFilter($filters, $sqlParams);
-        $sqlFilterPrice = $this->productSql->preparePriceFilter($filters, $sqlParams);
+        $sqlFilterName = $this->productSqlHelper->prepareNameFilter($filters, $sqlParams);
+        $sqlFilterCategory = $this->productSqlHelper->prepareCategoryFilter($filters, $sqlParams);
+        $sqlFilterPrice = $this->productSqlHelper->preparePriceFilter($filters, $sqlParams);
 
         // prepare sorts
         $sorts = $filterData['sorts'] ?? [];
-        $sqlSort = $this->productSql->prepareSqlSort($sorts);
+        $sqlSort = $this->productSqlHelper->prepareSqlSort($sorts);
+
+        // prepare limit offset
+        $sqlLimitOffset = ' LIMIT '.$limit.' OFFSET '.$offset.' ';
 
         // select min price from all 3 price sources(product, product_contract_list and product_price_list)
         $sql = '
-        SELECT
-            *,
-             (
-                    select min(price) from (
-                        (SELECT p.price)
-                        UNION
-                        (SELECT min(pcl.price) as price FROM product_contract_list pcl WHERE pcl.sku = p.sku AND pcl.user_id = '.$userId.')
-                        UNION
-                        (SELECT min(ppl.price) as price FROM product_price_list ppl WHERE p.sku = ppl.sku AND ppl.user_group_id in ('.$userGroupIds.'))
-                    ) as price_adjusted
-                ) as price_adjusted
+            '.$sqlSelect.'
             FROM
             product p
         WHERE 1 = 1
-        '.$sqlFilterCategory.'
-        '.$sqlFilterName.'
-        '.$sqlFilterPrice.'
-        '.$sqlSort.'
-        LIMIT
-            '.$limit.'
-         OFFSET
-            '.$offset.'
+            '.$sqlFilterCategory.'
+            '.$sqlFilterName.'
+            '.$sqlFilterPrice.'
+            '.$sqlSort.'
+            '.$sqlLimitOffset.'
         ';
 
         // prepare statement

@@ -26,7 +26,7 @@ class BasicTest extends TestCaseOrderPlacer
         $this->assertEquals(0, $orderItem->getDiscount());
         $this->assertEquals(20, $orderItem->getTax());
         $this->assertEquals(100, $orderItem->getTotal());
-        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getOrderPriceItem()->getType());
 
         $this->assertCount(1, $order->getOrderItems());
         $this->assertEquals(80, $order->getSubtotal());

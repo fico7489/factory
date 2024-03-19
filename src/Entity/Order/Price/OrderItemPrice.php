@@ -49,10 +49,10 @@ class OrderItemPrice
     #[ORM\OneToOne(targetEntity: OrderItem::class)]
     private OrderItem $orderItem;
 
-    #[ORM\ManyToOne(targetEntity: ProductPriceList::class, inversedBy: 'orderItemPrices')]
+    #[ORM\ManyToOne(targetEntity: ProductPriceList::class)]
     private ?ProductPriceList $priceList;
 
-    #[ORM\ManyToOne(targetEntity: ProductContractList::class, inversedBy: 'orderItemPrices')]
+    #[ORM\ManyToOne(targetEntity: ProductContractList::class)]
     private ?ProductContractList $contractList;
 
     public function getId(): ?int

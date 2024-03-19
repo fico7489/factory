@@ -28,7 +28,7 @@ class ItemDiscountTest extends TestCaseOrderPlacer
         $this->assertEquals(-5, $orderItem->getDiscount());
         $this->assertEquals(11.25, $orderItem->getTax());
         $this->assertEquals(56.25, $orderItem->getTotal());
-        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getOrderPriceItem()->getType());
 
         $this->assertCount(1, $order->getOrderItems());
         $this->assertEquals(50, $order->getSubtotal());

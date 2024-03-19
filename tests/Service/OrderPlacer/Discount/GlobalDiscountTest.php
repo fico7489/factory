@@ -27,7 +27,7 @@ class GlobalDiscountTest extends TestCaseOrderPlacer
         $this->assertEquals(-10, $orderItem->getDiscount());
         $this->assertEquals(35, $orderItem->getTax());
         $this->assertEquals(175, $orderItem->getTotal());
-        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getOrderPriceItem()->getType());
 
         $this->assertCount(1, $order->getOrderItems());
         $this->assertEquals(150, $order->getSubtotal());

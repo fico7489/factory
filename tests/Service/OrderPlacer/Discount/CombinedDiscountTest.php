@@ -29,7 +29,7 @@ class CombinedDiscountTest extends TestCaseOrderPlacer
         $this->assertEquals(-10, $orderItem->getDiscount());
         $this->assertEquals(10, $orderItem->getTax());
         $this->assertEquals(50, $orderItem->getTotal());
-        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getOrderPriceItem()->getType());
 
         /** @var OrderItem $orderItem2 */
         $orderItem2 = $order->getOrderItems()[1];
@@ -43,7 +43,7 @@ class CombinedDiscountTest extends TestCaseOrderPlacer
         $this->assertEquals(-5, $orderItem2->getDiscount());
         $this->assertEquals(13.75, $orderItem2->getTax());
         $this->assertEquals(68.75, $orderItem2->getTotal());
-        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem2->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem2->getOrderPriceItem()->getType());
 
         $this->assertCount(2, $order->getOrderItems());
         $this->assertEquals(110, $order->getSubtotal());

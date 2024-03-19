@@ -1,0 +1,59 @@
+<h1>Order #{{ order.id }}</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ORDER ITEM ID #</th>
+        <th>QUANTITY</th>
+        <th>PRICE</th>
+        <th>PRICE ADJUSTED</th>
+        <th>PRICE ADJUSTED TYPE</th>
+        <th>SUBTOTAL</th>
+        <th>DISCOUNT ITEM</th>
+        <th>DISCOUNT GLOBAL</th>
+        <th>DISCOUNT TOTAL</th>
+        <th>TAX</th>
+        <th>TOTAL</th>
+    </tr>
+    </thead>
+    {% for orderItem in order.orderItems %}
+        <tr>
+            <td>#{{ orderItem.id }}</td>
+            <td>{{ orderItem.quantity }}</td>
+            <td>{{ orderItem.price }}</td>
+            <td>{{ orderItem.priceAdjusted }}</td>
+            <td>{{ orderItem.orderPriceItem.type }}</td>
+            <td>{{ orderItem.subtotal }} </td>
+            <td>{{ orderItem.discountItem }} </td>
+            <td>{{ orderItem.discountGlobal }} </td>
+            <td>{{ orderItem.discount }} </td>
+            <td>{{ orderItem.tax }} </td>
+            <td>{{ orderItem.total }} </td>
+        </tr>
+
+    {% endfor %}
+
+</table>
+
+<h2>Totals</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>SUBTOTAL</th>
+        <th>{{ order.subtotal }}</th>
+    </tr>
+    <tr>
+        <th>DISCOUNT</th>
+        <th>{{ order.discount }}</th>
+    </tr>
+    <tr>
+        <th>TAX</th>
+        <th>{{ order.tax }}</th>
+    </tr>
+    <tr>
+        <th>TOTAL</th>
+        <th>{{ order.total }}</th>
+    </tr>
+    </thead>
+</table>

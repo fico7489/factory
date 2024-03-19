@@ -26,9 +26,6 @@ class Category
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'categories')]
-    private Collection $products;
-
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'children')]
     private ?Category $parent = null;
 

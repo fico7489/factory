@@ -80,14 +80,14 @@ class TestCase extends ApiTestCase
 
     protected function request($method, $url, $json = [], $description = ''): ResponseInterface
     {
-        $this->storeCurl($method, $url, $json, $description);
+        $this->storeDocumentation($method, $url, $json, $description);
 
         return $this->client->request($method, $url, [
             'json' => $json,
         ]);
     }
 
-    private function storeCurl($method, $url, $json = [], $description = '')
+    private function storeDocumentation($method, $url, $json = [], $description = ''): void
     {
         $parameterBag = $this->container->get(ParameterBagInterface::class);
 

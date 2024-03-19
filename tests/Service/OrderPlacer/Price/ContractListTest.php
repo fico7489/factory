@@ -29,8 +29,8 @@ class ContractListTest extends TestCaseOrderPlacer
         $this->assertEquals(0, $orderItem->getDiscount());
         $this->assertEquals(20.25, $orderItem->getTax());
         $this->assertEquals(101.25, $orderItem->getTotal());
-        $this->assertEquals(OrderItemPrice::TYPE_CONTRACT_LIST, $orderItem->getPriceItem()->getType());
-        $this->assertEquals($contractList, $orderItem->getPriceItem()->getContractList());
+        $this->assertEquals(OrderItemPrice::TYPE_CONTRACT_LIST, $orderItem->getOrderPriceItem()->getType());
+        $this->assertEquals($contractList, $orderItem->getOrderPriceItem()->getContractList());
 
         $this->assertCount(1, $order->getOrderItems());
         $this->assertEquals(81, $order->getSubtotal());

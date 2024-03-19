@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
-use App\Controller\CreateOrderAction;
+use App\Action\CreateOrderAction;
 use App\Entity\Order\OrderItem;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

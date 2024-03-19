@@ -27,7 +27,7 @@ class GreenTaxTest extends TestCaseOrderPlacer
         $this->assertEquals(-5, $orderItem->getDiscount());
         $this->assertEquals(68.25, $orderItem->getTax());
         $this->assertEquals(263.25, $orderItem->getTotal());
-        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem->getOrderPriceItem()->getType());
 
         /** @var OrderItem $orderItem2 */
         $orderItem2 = $order->getOrderItems()[1];
@@ -41,7 +41,7 @@ class GreenTaxTest extends TestCaseOrderPlacer
         $this->assertEquals(-5, $orderItem2->getDiscount());
         $this->assertEquals(73.75, $orderItem2->getTax());
         $this->assertEquals(368.75, $orderItem2->getTotal());
-        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem2->getPriceItem()->getType());
+        $this->assertEquals(OrderItemPrice::TYPE_PRODUCT, $orderItem2->getOrderPriceItem()->getType());
 
         $this->assertCount(2, $order->getOrderItems());
         $this->assertEquals(500, $order->getSubtotal());

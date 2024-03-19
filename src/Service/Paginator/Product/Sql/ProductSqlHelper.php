@@ -5,7 +5,7 @@ namespace App\Service\Paginator\Product\Sql;
 use App\Entity\User;
 
 // just one helper to move some logic
-class SqlHelper
+class ProductSqlHelper
 {
     public function prepareSqlSort(array $sorts): string
     {
@@ -61,7 +61,30 @@ class SqlHelper
         return '';
     }
 
-    public function prepareUserGroupIds(User $user): string
+    public function prepareSelect(User $user): string
+    {
+        // prepare price where
+        $userId = $user->getUserIdentifier();
+        $userGroupIds = $this->prepareUserGroupIds($user);
+
+        $sqlSelect = '
+                SELECT
+            *,
+             (
+                    select min(price) from (
+                        (SELECT p.price)
+                        UNION
+                        (SELECT min(pcl.price) as price FROM product_contract_list pcl WHERE pcl.sku = p.sku AND pcl.user_id = '.$userId.')
+                        UNION
+                        (SELECT min(ppl.price) as price FROM product_price_list ppl WHERE p.sku = ppl.sku AND ppl.user_group_id in ('.$userGroupIds.'))
+                    ) as price_adjusted
+                ) as price_adjusted
+        ';
+
+        return $sqlSelect;
+    }
+
+    private function prepareUserGroupIds(User $user): string
     {
         $userGroups = $user->getUserGroups()->toArray();
 

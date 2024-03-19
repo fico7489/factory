@@ -26,5 +26,9 @@ class TaxApplicator
                 $provider->apply($order);
             }
         }
+
+        foreach ($order->getOrderItems() as $orderItem) {
+            $orderItem->setTax(round($orderItem->getTax(), 2));
+        }
     }
 }

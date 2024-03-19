@@ -7,10 +7,11 @@
 vendor/bin/php-cs-fixer fix
 vendor/bin/phpstan analyse --memory-limit=1G
 vendor/bin/phpunit
+php bin/console doctrine:schema:validate --skip-sync
+
 
 php bin/console doctrine:schema:drop --force --full-database
 php bin/console doctrine:migrations:migrate  --no-interaction
-php bin/console doctrine:schema:validate --skip-sync
 php bin/console doctrine:migrations:diff
 php bin/console doctrine:migrations:migrate -n
 php bin/console app:seed
