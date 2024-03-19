@@ -24,13 +24,13 @@ class PaginateProductsTest extends TestCase
         $this->assertEquals(10, count($response->toArray()['data']));
         $this->assertEquals(25, $response->toArray()['meta']['totalItems']);
 
-        $response = $this->request('GET', '/api/category/'.$categoryOne->getId().'/products/', [], 'Get product by category one');
+        $response = $this->request('GET', '/api/categories/'.$categoryOne->getId().'/products/', [], 'Get product by category one');
         $this->assertEquals(2, count($response->toArray()['data']));
 
-        $response = $this->request('GET', '/api/category/'.$categoryOneOne->getId().'/products/', [], 'Get product by category one_one');
+        $response = $this->request('GET', '/api/categories/'.$categoryOneOne->getId().'/products/', [], 'Get product by category one_one');
         $this->assertEquals(1, count($response->toArray()['data']));
 
-        $response = $this->request('GET', '/api/category/'.$categoryTwo->getId().'/products/', [], 'Get product by category two');
+        $response = $this->request('GET', '/api/categories/'.$categoryTwo->getId().'/products/', [], 'Get product by category two');
         $this->assertEquals(2, count($response->toArray()['data']));
     }
 

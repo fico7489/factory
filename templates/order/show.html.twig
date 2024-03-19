@@ -1,5 +1,9 @@
 <h1>Order #{{ order.id }}</h1>
 
+<p><b>User:</b> {{ order.user.email }}</p>
+
+<p><b>Address:</b> {{ order.addressAddress }}, {{ order.addressCity }}, {{ order.addressCountry }} ({{ order.addressPhone }})</p>
+
 <table border="1">
     <thead>
     <tr>

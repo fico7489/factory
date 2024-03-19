@@ -63,7 +63,7 @@ class PaginateV2ProductsTest extends TestCase
         $this->assertEquals(2, count($response->toArray()['data']));
 
         $this->asUser($userFirst);
-        $response = $this->request('GET', '/api/v2/products?filters[][price][lte]=99.2', [], 'Test filter -> by price');
+        $response = $this->request('GET', '/api/v2/products?filters[][price_adjusted][lte]=99.2', [], 'Test filter -> by price');
         $this->assertEquals(1, count($response->toArray()['data']));
     }
 

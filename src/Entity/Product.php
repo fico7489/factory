@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
         new Get(),
         new GetCollection(),
         new GetCollection(
-            uriTemplate: 'category/{category}/products/',
+            uriTemplate: 'categories/{category}/products/',
             uriVariables: [
                 'category' => new Link(toClass: Category::class, identifiers: ['id']),
             ],

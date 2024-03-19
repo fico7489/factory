@@ -28,10 +28,10 @@ class ProductSqlHelper
 
     public function preparePriceFilter(array $filters, array &$sqlParams): string
     {
-        if (!empty($value = $filters[0]['price']['lte'] ?? null)) {
-            $sqlParams['price'] = $value;
+        if (!empty($value = $filters[0]['price_adjusted']['lte'] ?? null)) {
+            $sqlParams['price_adjusted'] = $value;
 
-            return ' HAVING price_adjusted < :price';
+            return ' HAVING price_adjusted < :price_adjusted';
         }
 
         return '';

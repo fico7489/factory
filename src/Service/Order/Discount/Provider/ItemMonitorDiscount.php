@@ -21,8 +21,6 @@ class ItemMonitorDiscount implements DiscountInterface
 
     public function match(Order $order): bool
     {
-        $total = 0;
-
         $categoryMonitor = $this->entityManager->getRepository(Category::class)->findOneBy(['name' => 'Monitor']);
 
         foreach ($order->getOrderItems() as $orderItem) {

@@ -25,7 +25,7 @@ class ProductsPerCategoryExtension implements QueryCollectionExtensionInterface
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass, array $context = [])
     {
-        if ('_api_category/{category}/products/_get_collection' !== $context['operation_name']) {
+        if ('_api_categories/{category}/products/_get_collection' !== $context['operation_name']) {
             return;
         }
 
