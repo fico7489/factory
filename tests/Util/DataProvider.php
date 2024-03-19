@@ -16,15 +16,12 @@ class DataProvider
     ) {
     }
 
-    public function createUser(?UserGroup $userGroup = null, bool $flush = true): User
+    public function createUser($userGroups = [], $email = 'test@example.com', bool $flush = true): User
     {
         $user = new User();
         $user->setEmail('test@example.com');
         $user->setPassword('secret');
-
-        if ($userGroup) {
-            $user->setUserGroups(new ArrayCollection([$userGroup]));
-        }
+        $user->setUserGroups(new ArrayCollection($userGroups));
 
         $this->entityManager->persist($user);
 
@@ -47,27 +44,26 @@ class DataProvider
         return $userGroup;
     }
 
-    public function createCategory($name = 'Test'): Category
+    public function createCategory($name = 'Test', ?Category $parent = null): Category
     {
         $category = new Category();
         $category->setName($name);
+        $category->setParent($parent);
+
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 
         return $category;
     }
 
-    public function createProduct(float $price, string $sku = 'test', ?Category $category = null, bool $flush = true): Product
+    public function createProduct(float $price, string $sku = 'test', string $name = 'test', array $categories = [], bool $flush = true): Product
     {
         $product = new Product();
-        $product->setName('test');
+        $product->setName($name);
         $product->setPrice($price);
         $product->setSku($sku);
         $product->setPublished(true);
-
-        if ($category) {
-            $product->setCategories(new ArrayCollection([$category]));
-        }
+        $product->setCategories(new ArrayCollection($categories));
 
         $this->entityManager->persist($product);
         if ($flush) {

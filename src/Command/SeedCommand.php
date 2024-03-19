@@ -34,75 +34,11 @@ class SeedCommand extends Command
         $application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
         $application->run(new ArrayInput(['command' => 'doctrine:migrations:migrate', '-n' => true]));
 
-        $this->prepareUserGroups();
-        $this->prepareUsers();
         $this->prepareContractList();
         $this->preparePriceList();
-        $this->prepareCategories();
         $this->prepareProducts();
 
         return Command::SUCCESS;
-    }
-
-    private function prepareUserGroups(): void
-    {
-        $userGroup = new UserGroup();
-        $userGroup->setName('Repairman');
-        $this->entityManager->persist($userGroup);
-
-        $userGroup = new UserGroup();
-        $userGroup->setName('Gold');
-        $this->entityManager->persist($userGroup);
-
-        $this->entityManager->flush();
-    }
-
-    private function prepareUsers(): void
-    {
-        $userGroupRepairman = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Repairman']);
-        $userGroupGold = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Gold']);
-
-        $userAdmin = new User();
-        $userAdmin->setEmail('admin@example.com');
-        $userAdmin->setFirstName('admin');
-        $userAdmin->setLastName('admin');
-        $userAdmin->setPassword('secret');
-        $userAdmin->setUserGroups(new ArrayCollection([]));
-        $this->entityManager->persist($userAdmin);
-
-        $userRegular = new User();
-        $userRegular->setEmail('regular@example.com');
-        $userRegular->setFirstName('regular');
-        $userRegular->setLastName('regular');
-        $userRegular->setPassword('secret');
-        $userRegular->setUserGroups(new ArrayCollection([]));
-        $this->entityManager->persist($userRegular);
-
-        $userRepairman = new User();
-        $userRepairman->setEmail('repairman@example.com');
-        $userRepairman->setFirstName('repairman');
-        $userRepairman->setLastName('repairman');
-        $userRepairman->setPassword('secret');
-        $userRepairman->setUserGroups(new ArrayCollection([$userGroupRepairman]));
-        $this->entityManager->persist($userRepairman);
-
-        $userGold = new User();
-        $userGold->setEmail('gold@example.com');
-        $userGold->setFirstName('gold');
-        $userGold->setLastName('gold');
-        $userGold->setPassword('secret');
-        $userGold->setUserGroups(new ArrayCollection([$userGroupGold]));
-        $this->entityManager->persist($userGold);
-
-        $userGoldAndRepairman = new User();
-        $userGoldAndRepairman->setEmail('gold_and_repairman@example.com');
-        $userGoldAndRepairman->setFirstName('gold_and_repairman');
-        $userGoldAndRepairman->setLastName('gold_and_repairman');
-        $userGoldAndRepairman->setPassword('secret');
-        $userGoldAndRepairman->setUserGroups(new ArrayCollection([$userGroupRepairman, $userGroupGold]));
-        $this->entityManager->persist($userGoldAndRepairman);
-
-        $this->entityManager->flush();
     }
 
     private function prepareContractList(): void
@@ -141,53 +77,6 @@ class SeedCommand extends Command
         $priceList->setSku('aaaa-1111');
         $priceList->setUserGroup($userGroupGold);
         $this->entityManager->persist($priceList);
-
-        $this->entityManager->flush();
-    }
-
-    private function prepareCategories(): void
-    {
-        $categoryPC = new Category();
-        $categoryPC->setName('PC');
-        $this->entityManager->persist($categoryPC);
-
-        $categoryLaptop = new Category();
-        $categoryLaptop->setName('Laptop');
-        $categoryLaptop->setParent($categoryPC);
-        $this->entityManager->persist($categoryLaptop);
-
-        $categoryGaming = new Category();
-        $categoryGaming->setName('Gaming');
-        $categoryGaming->setParent($categoryLaptop);
-        $this->entityManager->persist($categoryGaming);
-
-        $categoryForWork = new Category();
-        $categoryForWork->setName('For Work');
-        $categoryForWork->setParent($categoryLaptop);
-        $this->entityManager->persist($categoryForWork);
-
-        $categoryDesktop = new Category();
-        $categoryDesktop->setName('Desktop');
-        $categoryDesktop->setParent($categoryPC);
-        $this->entityManager->persist($categoryDesktop);
-
-        $categoryCellPhone = new Category();
-        $categoryCellPhone->setName('Cell Phone');
-        $this->entityManager->persist($categoryCellPhone);
-
-        $categorySmartphone = new Category();
-        $categorySmartphone->setName('Smartphone');
-        $categorySmartphone->setParent($categoryCellPhone);
-        $this->entityManager->persist($categorySmartphone);
-
-        $categoryCharger = new Category();
-        $categoryCharger->setName('Charger');
-        $categoryCharger->setParent($categoryCellPhone);
-        $this->entityManager->persist($categoryCharger);
-
-        $categoryMonitor = new Category();
-        $categoryMonitor->setName('Monitor');
-        $this->entityManager->persist($categoryMonitor);
 
         $this->entityManager->flush();
     }

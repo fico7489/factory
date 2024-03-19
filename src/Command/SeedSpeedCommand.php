@@ -33,12 +33,114 @@ class SeedSpeedCommand extends Command
 
         $userGroups = $this->prepareUserGroups($io);
         $userIds = $this->prepareUsers($io, $userGroups);
-        $productSkus = $this->prepareProducts($io);
+        $categories = $this->prepareCategories($io);
+        $productSkus = $this->prepareProducts($io, $categories);
 
         $this->prepareContractList($io, $userIds, $productSkus);
         // $this->preparePriceList($io, $userGroups, $productSkus);
 
         return Command::SUCCESS;
+    }
+
+    /** @return UserGroup[] */
+    private function prepareUserGroups(SymfonyStyle $io): array
+    {
+        $userGroups = [];
+
+        $userGroups[] = $this->dataProvider->createUserGroup('Repairman', false);
+        $userGroups[] = $this->dataProvider->createUserGroup('Gold', false);
+
+        $count = 100;
+
+        $io->writeln("\n".'User groups');
+        $bar = $io->createProgressBar($count);
+
+        for ($i = 0; $i < $count; ++$i) {
+            $userGroups[] = $this->dataProvider->createUserGroup(Uuid::uuid4(), false);
+            $bar->advance();
+        }
+
+        $this->entityManager->flush();
+
+        $bar->finish();
+
+        return $userGroups;
+    }
+
+    private function prepareUsers(SymfonyStyle $io, $userGroups): array
+    {
+        $userGroupRepairman = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Repairman']);
+        $userGroupGold = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Gold']);
+
+        $users = [];
+        $users[] = $this->dataProvider->createUser([], 'admin@example.com', false);
+        $users[] = $this->dataProvider->createUser([], 'regular@example.com', false);
+        $users[] = $this->dataProvider->createUser([$userGroupRepairman], 'repairman@example.com', false);
+        $users[] = $this->dataProvider->createUser([$userGroupGold], 'gold@example.com', false);
+        $users[] = $this->dataProvider->createUser([$userGroupRepairman, $userGroupGold], 'gold_and_repairman@example.com', false);
+
+        $count = 1000;
+
+        // create 1000 users
+        $io->writeln("\n".'Users');
+        $bar = $io->createProgressBar($count);
+
+        for ($i = 0; $i < $count; ++$i) {
+            $users[] = $this->dataProvider->createUser($userGroups[array_rand($userGroups)], false);
+            $bar->advance();
+        }
+
+        $this->entityManager->flush();
+
+        $usersIds = [];
+        foreach ($users as $user) {
+            $usersIds[] = $user->getId();
+        }
+
+        $bar->finish();
+
+        return $usersIds;
+    }
+
+    private function prepareCategories(SymfonyStyle $io): array
+    {
+        $categories = [];
+        $categories[] = $this->dataProvider->createCategory('PC');
+        $categories[] = $this->dataProvider->createCategory('Laptop', $categories[0]);
+        $categories[] = $this->dataProvider->createCategory('Gaming', $categories[1]);
+        $categories[] = $this->dataProvider->createCategory('For Work', $categories[1]);
+        $categories[] = $this->dataProvider->createCategory('Desktop', $categories[0]);
+        $categories[] = $this->dataProvider->createCategory('Cell Phone');
+        $categories[] = $this->dataProvider->createCategory('Smartphone', $categories[5]);
+        $categories[] = $this->dataProvider->createCategory('Charger', $categories[5]);
+        $categories[] = $this->dataProvider->createCategory('Monitor');
+
+        return $categories;
+    }
+
+    private function prepareProducts(SymfonyStyle $io, array $categories): array
+    {
+        $productSkus = [];
+        $productSkus[] = $this->dataProvider->createProduct(1500, 'aaaa-1111', 'LENOVO ThinkPad T14s', null, false)->getSku();
+
+        $count = 2000;
+
+        $io->writeln("\n".'Products');
+        // create 20k products
+        $bar = $io->createProgressBar($count);
+
+        for ($i = 0; $i < $count; ++$i) {
+            $sku = Uuid::uuid4();
+            $price = rand(1, 100000).'.'.rand(1, 99);
+            $productSkus[] = $this->dataProvider->createProduct($price, $sku, 'test', null, false)->getSku();
+            $bar->advance();
+        }
+
+        $this->entityManager->flush();
+
+        $bar->finish();
+
+        return $productSkus;
     }
 
     private function preparePriceList(SymfonyStyle $io, array $userGroups, array $productSkus): void
@@ -73,8 +175,7 @@ class SeedSpeedCommand extends Command
 
         $i = 0;
 
-        $millisecondsAll = floor(microtime(true) * 1000);
-        $milliseconds = floor(microtime(true) * 1000);
+        $msStart = floor(microtime(true) * 1000);
         $contactLists = [];
         foreach ($userIds as $userId) {
             $user = $this->entityManager->getRepository(User::class)->find($userId);
@@ -83,97 +184,16 @@ class SeedSpeedCommand extends Command
                 /* @var Product $product */
 
                 $contactLists[] = $this->dataProvider->createContractList($user, $productSku, $price, false);
-                ++$i;
 
                 $bar->advance();
             }
-
-            if ($i > 10000) {
-                $this->entityManager->flush();
-                $this->entityManager->clear();
-
-                $io->writeln('ms='.floor(microtime(true) * 1000) - $milliseconds);
-                $i = 0;
-                $milliseconds = floor(microtime(true) * 1000);
-            }
         }
 
         $this->entityManager->flush();
 
-        $io->writeln('ms All='.floor(microtime(true) * 1000) - $millisecondsAll);
+        $msFinish = floor(microtime(true) * 1000);
+        $io->writeln('ms All='.($msFinish - $msStart));
 
         $bar->finish();
-    }
-
-    /** @return User[] */
-    private function prepareUsers(SymfonyStyle $io, $userGroups): array
-    {
-        $count = 1000;
-
-        // create 1000 users
-        $io->writeln("\n".'Users');
-        $bar = $io->createProgressBar($count);
-
-        $users = [];
-        for ($i = 0; $i < $count; ++$i) {
-            $users[] = $this->dataProvider->createUser($userGroups[array_rand($userGroups)], false);
-            $bar->advance();
-        }
-
-        $this->entityManager->flush();
-
-        $usersIds = [];
-        foreach ($users as $user) {
-            $usersIds[] = $user->getId();
-        }
-
-        $bar->finish();
-
-        return $usersIds;
-    }
-
-    /** @return UserGroup[] */
-    private function prepareUserGroups(SymfonyStyle $io): array
-    {
-        $count = 100;
-
-        $io->writeln("\n".'User groups');
-        $bar = $io->createProgressBar($count);
-
-        $userGroups = [];
-        for ($i = 0; $i < $count; ++$i) {
-            $userGroups[] = $this->dataProvider->createUserGroup(Uuid::uuid4(), false);
-            $bar->advance();
-        }
-
-        $this->entityManager->flush();
-
-        $bar->finish();
-
-        return $userGroups;
-    }
-
-    /** @return Product[] */
-    private function prepareProducts(SymfonyStyle $io): array
-    {
-        $count = 2000;
-
-        $io->writeln("\n".'Products');
-        // create 20k products
-        $bar = $io->createProgressBar($count);
-
-        $productSkus = [];
-        for ($i = 0; $i < $count; ++$i) {
-            $sku = Uuid::uuid4();
-            $price = rand(1, 100000).'.'.rand(1, 99);
-            $productSkus[] = $this->dataProvider->createProduct($price, $sku, null, false)->getSku();
-            $bar->advance();
-        }
-
-        $this->entityManager->flush();
-
-        $bar->finish();
-
-        return $productSkus;
     }
 }

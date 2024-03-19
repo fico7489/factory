@@ -12,7 +12,7 @@ class CombinedDiscountTest extends TestCaseOrderPlacer
     {
         $user = $this->dataProvider->createUser();
         $category = $this->dataProvider->createCategory('Monitor');
-        $product = $this->dataProvider->createProduct(50, 'test', $category);
+        $product = $this->dataProvider->createProduct(50, 'test', 'test', [$category]);
         $product2 = $this->dataProvider->createProduct(60, 'test2');
 
         $order = $this->orderPlacer->placeOrder($user, [$product->getId() => 1, $product2->getId() => 1]);

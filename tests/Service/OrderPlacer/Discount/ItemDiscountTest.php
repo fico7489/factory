@@ -12,7 +12,7 @@ class ItemDiscountTest extends TestCaseOrderPlacer
     {
         $user = $this->dataProvider->createUser();
         $category = $this->dataProvider->createCategory('Monitor');
-        $product = $this->dataProvider->createProduct(50, 'test', $category);
+        $product = $this->dataProvider->createProduct(50, 'test', 'test', [$category]);
 
         $order = $this->orderPlacer->placeOrder($user, [$product->getId() => 1]);
 

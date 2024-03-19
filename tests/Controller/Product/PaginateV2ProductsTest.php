@@ -72,8 +72,8 @@ class PaginateV2ProductsTest extends TestCase
         $userGroupFirst = $this->dataProvider->createUserGroup('First');
         $userGroupSecond = $this->dataProvider->createUserGroup('Second');
 
-        $userFirst = $this->dataProvider->createUser($userGroupFirst);
-        $userSecond = $this->dataProvider->createUser($userGroupSecond);
+        $userFirst = $this->dataProvider->createUser([$userGroupFirst]);
+        $userSecond = $this->dataProvider->createUser([$userGroupSecond]);
         $userThird = $this->dataProvider->createUser();
 
         $categoryOne = new Category();

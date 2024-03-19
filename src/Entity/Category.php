@@ -30,7 +30,7 @@ class Category
     private Collection $products;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'children')]
-    private Category $parent;
+    private ?Category $parent = null;
 
     #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'parent')]
     private Collection $children;
@@ -60,15 +60,16 @@ class Category
         $this->description = $description;
     }
 
-    public function getParent(): Category
+    public function getParent(): ?Category
     {
         return $this->parent;
     }
 
-    public function setParent(Category $parent): void
+    public function setParent(?Category $parent): void
     {
         $this->parent = $parent;
     }
+
 
     public function getChildren(): Collection
     {
