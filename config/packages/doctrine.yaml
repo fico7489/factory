@@ -3,7 +3,7 @@ doctrine:
         connections:
             default:
                 url: '%env(resolve:DATABASE_URL)%'
-                logging: true
+                logging: false
                 use_savepoints: true
     orm:
         auto_generate_proxy_classes: true
@@ -22,3 +22,10 @@ doctrine:
         dql:
             string_functions:
                 field: \DoctrineExtensions\Query\Mysql\Field
+
+when@test:
+    doctrine:
+        dbal:
+            connections:
+                default:
+                    logging: true

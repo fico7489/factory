@@ -11,6 +11,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -27,30 +28,47 @@ class DbSeedCommand extends Command
         $this->dataProvider = new DataProvider($this->entityManager);
     }
 
+    protected function configure(): void
+    {
+        $this
+            ->addOption('count-product', null, InputOption::VALUE_OPTIONAL, '', 100)
+            ->addOption('count-user', null, InputOption::VALUE_OPTIONAL, '', 100)
+            ->addOption('count-user-group', null, InputOption::VALUE_OPTIONAL, '', 100)
+        ;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $countProduct = $input->getOption('count-product');
+        $countUser = $input->getOption('count-user');
+        $countUserGroup = $input->getOption('count-user-group');
+
         $io = new SymfonyStyle($input, $output);
 
-        $userGroups = $this->prepareUserGroups($io);
-        $userIds = $this->prepareUsers($io, $userGroups);
+        $userGroups = $this->prepareUserGroups($io, $countUserGroup);
+        $userIds = $this->prepareUsers($io, $countUser, $userGroups);
         $categories = $this->prepareCategories($io);
-        $productSkus = $this->prepareProducts($io, $categories);
+        $productSkus = $this->prepareProducts($io, $countProduct, $categories);
+
+        $this->entityManager->flush();
+        $this->entityManager->clear();
 
         $this->prepareContractList($io, $userIds, $productSkus);
         $this->preparePriceList($io, $userGroups, $productSkus);
+
+        $io->writeln("\n");
 
         return Command::SUCCESS;
     }
 
     /** @return UserGroup[] */
-    private function prepareUserGroups(SymfonyStyle $io): array
+    private function prepareUserGroups(SymfonyStyle $io, $count): array
     {
         $userGroups = [];
 
+        $userGroups[] = $this->dataProvider->createUserGroup('Admin', false);
         $userGroups[] = $this->dataProvider->createUserGroup('Repairman', false);
         $userGroups[] = $this->dataProvider->createUserGroup('Gold', false);
-
-        $count = 100;
 
         $io->writeln("\n".'User groups');
         $bar = $io->createProgressBar($count);
@@ -67,19 +85,18 @@ class DbSeedCommand extends Command
         return $userGroups;
     }
 
-    private function prepareUsers(SymfonyStyle $io, $userGroups): array
+    private function prepareUsers(SymfonyStyle $io, $count, $userGroups): array
     {
+        $userGroupAdmin = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Admin']);
         $userGroupRepairman = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Repairman']);
         $userGroupGold = $this->entityManager->getRepository(UserGroup::class)->findOneBy(['name' => 'Gold']);
 
         $users = [];
-        $users[] = $this->dataProvider->createUser([], 'admin@example.com', false);
+        $users[] = $this->dataProvider->createUser([$userGroupAdmin], 'admin@example.com', false);
         $users[] = $this->dataProvider->createUser([], 'regular@example.com', false);
         $users[] = $this->dataProvider->createUser([$userGroupRepairman], 'repairman@example.com', false);
         $users[] = $this->dataProvider->createUser([$userGroupGold], 'gold@example.com', false);
         $users[] = $this->dataProvider->createUser([$userGroupRepairman, $userGroupGold], 'gold_and_repairman@example.com', false);
-
-        $count = 100;
 
         // create 1000 users
         $io->writeln("\n".'Users');
@@ -120,7 +137,7 @@ class DbSeedCommand extends Command
         return $categories;
     }
 
-    private function prepareProducts(SymfonyStyle $io, array $categories): array
+    private function prepareProducts(SymfonyStyle $io, $count, array $categories): array
     {
         $productSkus = [];
         $productSkus[] = $this->dataProvider->createProduct(1500, 'aaaa-1111', 'LENOVO ThinkPad T14s', [$categories[2], $categories[3]], false)->getSku();
@@ -131,16 +148,13 @@ class DbSeedCommand extends Command
         $productSkus[] = $this->dataProvider->createProduct(1100, 'aaaa-6666', 'Charger USB3 - UNIVERSAL', [$categories[7]], false)->getSku();
         $productSkus[] = $this->dataProvider->createProduct(1100, 'aaaa-7777', 'Monitor 31.5" ACER Nitro XV322Q', [$categories[8]], false)->getSku();
 
-        $count = 100;
-
         $io->writeln("\n".'Products');
         // create 20k products
         $bar = $io->createProgressBar($count);
 
         for ($i = 0; $i < $count; ++$i) {
             $sku = Uuid::uuid4();
-            $price = rand(1, 100000).'.'.rand(1, 99);
-            $productSkus[] = $this->dataProvider->createProduct($price, $sku, 'test', [$categories[array_rand($categories)]], false)->getSku();
+            $productSkus[] = $this->dataProvider->createProduct($this->randPrice(), $sku, 'test', [$categories[array_rand($categories)]], false)->getSku();
             $bar->advance();
         }
 
@@ -159,10 +173,17 @@ class DbSeedCommand extends Command
         $bar = $io->createProgressBar($count);
 
         foreach ($userGroups as $userGroup) {
+            /* @var UserGroup $userGroup */
             foreach ($productSkus as $productSku) {
-                $price = rand(1, 100000).'.'.rand(1, 99);
+                if (1 == $userGroup->getId() and 'aaaa-1111' == $productSku) {
+                    // $this->dataProvider->createPriceList($userGroup, $productSku, 1400, false);
+                }
 
-                $this->dataProvider->createPriceList($userGroup, $productSku, $price, false);
+                if (1 == $userGroup->getId()) {
+                    continue;
+                }
+
+                $this->dataProvider->createPriceList($userGroup, $productSku, $this->randPrice(), false);
 
                 $bar->advance();
             }
@@ -181,27 +202,38 @@ class DbSeedCommand extends Command
         $io->writeln("\n".'Contract Lists');
         $bar = $io->createProgressBar($count);
 
-        $i = 0;
-
-        $msStart = floor(microtime(true) * 1000);
-        $contactLists = [];
+        $items = '';
+        $i = 1;
         foreach ($userIds as $userId) {
             $user = $this->entityManager->getRepository(User::class)->find($userId);
             foreach ($productSkus as $productSku) {
-                $price = rand(1, 100000).'.'.rand(1, 99);
+                if (1 == $userId and 'aaaa-2222' == $productSku) {
+                    $this->dataProvider->createContractList($user, $productSku, 1500, false);
+                }
+
+                if (1 == $userId) {
+                    continue;
+                }
+
                 /* @var Product $product */
 
-                $contactLists[] = $this->dataProvider->createContractList($user, $productSku, $price, false);
+                // $this->dataProvider->createContractList($user, $productSku, $this->randPrice(), false);
+                $items .= $i++.','.$userId.','.$this->randPrice().','.$productSku."\n";
 
                 $bar->advance();
             }
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
 
-        $msFinish = floor(microtime(true) * 1000);
-        $io->writeln('ms All='.($msFinish - $msStart));
+        file_put_contents('.docker/mysql/data/product_contract_list.txt', $items);
 
         $bar->finish();
+    }
+
+    private function randPrice(): float
+    {
+        return (float) (rand(1, 1000).'.'.rand(1, 99));
     }
 }

@@ -10,8 +10,6 @@ phpstan.neon
 /public/bundles/
 .env.local
 api_documentation
-
-
-###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
-###< lexik/jwt-authentication-bundle ###
+/.docker/mysql/data/
+

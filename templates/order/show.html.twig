@@ -4,6 +4,7 @@
     <thead>
     <tr>
         <th>ORDER ITEM ID #</th>
+        <th>PRODUCT</th>
         <th>QUANTITY</th>
         <th>PRICE</th>
         <th>PRICE ADJUSTED</th>
@@ -12,6 +13,7 @@
         <th>DISCOUNT ITEM</th>
         <th>DISCOUNT GLOBAL</th>
         <th>DISCOUNT TOTAL</th>
+        <th>TAX BASE</th>
         <th>TAX</th>
         <th>TOTAL</th>
     </tr>
@@ -19,6 +21,14 @@
     {% for orderItem in order.orderItems %}
         <tr>
             <td>#{{ orderItem.id }}</td>
+            <td>
+                {{ orderItem.product.name }}
+                <ul>
+                    {% for category in orderItem.product.categories %}
+                        <li>- {{ category.name }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
             <td>{{ orderItem.quantity }}</td>
             <td>{{ orderItem.price }}</td>
             <td>{{ orderItem.priceAdjusted }}</td>
@@ -27,6 +37,7 @@
             <td>{{ orderItem.discountItem }} </td>
             <td>{{ orderItem.discountGlobal }} </td>
             <td>{{ orderItem.discount }} </td>
+            <td>{{ orderItem.taxBase }} </td>
             <td>{{ orderItem.tax }} </td>
             <td>{{ orderItem.total }} </td>
         </tr>

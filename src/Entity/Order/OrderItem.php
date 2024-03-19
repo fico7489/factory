@@ -115,6 +115,11 @@ class OrderItem
         $this->discountGlobal = $discountGlobal;
     }
 
+    public function getTaxBase(): ?float
+    {
+        return $this->getSubtotal() + $this->getDiscount();
+    }
+
     public function getTax(): ?float
     {
         return $this->tax;

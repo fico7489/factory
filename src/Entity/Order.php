@@ -33,46 +33,33 @@ class Order
 
     public function getSubtotal(): float
     {
-        $subtotal = 0;
-
-        foreach ($this->getOrderItems() as $orderItem) {
-            $subtotal += $orderItem->getSubtotal();
-        }
-
-        return $subtotal;
+        return $this->sumOrderItem('getSubtotal');
     }
 
     public function getDiscount(): float
     {
-        $discount = 0;
-
-        foreach ($this->getOrderItems() as $orderItem) {
-            $discount += $orderItem->getDiscount();
-        }
-
-        return $discount;
+        return $this->sumOrderItem('getDiscount');
     }
 
     public function getTax(): float
     {
-        $tax = 0;
-
-        foreach ($this->getOrderItems() as $orderItem) {
-            $tax += $orderItem->getTax();
-        }
-
-        return $tax;
+        return $this->sumOrderItem('getTax');
     }
 
     public function getTotal(): float
     {
-        $total = 0;
+        return $this->sumOrderItem('getTotal');
+    }
+
+    private function sumOrderItem($getter)
+    {
+        $sum = 0;
 
         foreach ($this->getOrderItems() as $orderItem) {
-            $total += $orderItem->getTotal();
+            $sum += $orderItem->{$getter}();
         }
 
-        return $total;
+        return $sum;
     }
 
     public function getId(): ?int

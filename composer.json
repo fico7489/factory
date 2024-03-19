@@ -22,7 +22,7 @@
         "symfony/monolog-bundle": "3.*",
         "beberlei/doctrineextensions": "1.*",
         "symfony/security-bundle": "7.*",
-        "lexik/jwt-authentication-bundle": "^2.20",
+        "lexik/jwt-authentication-bundle": "2.*",
         "symfony/twig-bundle": "7.*"
     },
     "require-dev": {

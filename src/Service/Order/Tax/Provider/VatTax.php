@@ -4,15 +4,9 @@ namespace App\Service\Order\Tax\Provider;
 
 use App\Entity\Order;
 use App\Service\Order\Tax\Interface\TaxInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 class VatTax implements TaxInterface
 {
-    public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-    ) {
-    }
-
     public function name(): string
     {
         return 'vat';
@@ -26,11 +20,9 @@ class VatTax implements TaxInterface
     public function apply(Order $order): void
     {
         foreach ($order->getOrderItems() as $orderItem) {
-            $taxBase = $orderItem->getSubtotal() + $orderItem->getDiscount();
+            $tax = round($orderItem->getTaxBase() * 0.25, 2);
 
-            $tax = $taxBase * 0.25;
             $orderItem->setTax($orderItem->getTax() + $tax);
         }
-        // $this->entityManager->refresh($order);
     }
 }
