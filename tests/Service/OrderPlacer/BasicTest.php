@@ -4,9 +4,20 @@ namespace App\Tests\Service\OrderPlacer;
 
 use App\Entity\Order\OrderItem;
 use App\Entity\Order\Price\OrderItemPrice;
+use DAMA\DoctrineTestBundle\Doctrine\DBAL\StaticDriver;
 
 class BasicTest extends TestCaseOrderPlacer
 {
+    /*public static function setUpBeforeClass(): void
+    {
+        StaticDriver::setKeepStaticConnections(false);
+    }*/
+
+    public static function tearDownAfterClass(): void
+    {
+        StaticDriver::setKeepStaticConnections(true);
+    }
+
     public function testService(): void
     {
         $user = $this->dataProvider->createUser();

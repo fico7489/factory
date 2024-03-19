@@ -12,9 +12,13 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class TestCase extends ApiTestCase
 {
+    private static ?string $jwtToken = null;
+
     protected Client $client;
     protected Container $container;
     protected EntityManagerInterface $entityManager;
@@ -62,29 +66,46 @@ class TestCase extends ApiTestCase
         /** @var JWTTokenManagerInterface $tokenManager */
         $tokenManager = $this->container->get(JWTTokenManagerInterface::class);
 
-        $token = $tokenManager->create($user);
+        $jwtToken = $tokenManager->create($user);
+
+        self::$jwtToken = $jwtToken;
 
         $this->client->setDefaultOptions([
             'headers' => [
-                'Authorization' => 'Bearer '.$token,
+                'Authorization' => 'Bearer '.$jwtToken,
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
     }
 
-    protected function asUserId(int $userId): void
+    protected function request($method, $url, $json = [], $description = ''): ResponseInterface
     {
-        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        $this->storeCurl($method, $url, $json, $description);
 
-        $this->asUser($user);
+        return $this->client->request($method, $url, [
+            'json' => $json,
+        ]);
     }
 
-    private function save($entities)
+    private function storeCurl($method, $url, $json = [], $description = '')
     {
-        foreach ($entities as $entity) {
-            $this->entityManager->persist($entity);
-        }
+        $parameterBag = $this->container->get(ParameterBagInterface::class);
 
-        $this->entityManager->flush();
+        $curl = 'curl --location --request '.$method.' '.$parameterBag->get('api_url').$url.
+            " --header 'Content-Type: application/json' ".
+            " --header 'Authorization: Bearer ".self::$jwtToken."' ".
+            ' --data '."'".json_encode($json)."'";
+
+        $path = 'api_documentation/'.str_replace('\\', '_', static::class).'.md';
+
+        $string =
+            "\n"
+            .$description
+            ."\n\n"
+            .$curl
+            ."\n"
+            .'------------------------------------';
+
+        file_put_contents($path, $string, FILE_APPEND);
     }
 }

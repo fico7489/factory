@@ -9,7 +9,7 @@ composer.lock
 phpstan.neon
 /public/bundles/
 .env.local
-
+api_documentation
 
 
 ###> lexik/jwt-authentication-bundle ###

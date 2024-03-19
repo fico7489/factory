@@ -12,8 +12,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-#[AsCommand(name: 'app:migrate')]
-class MigrateCommand extends Command
+#[AsCommand(name: 'app:db:fresh')]
+class DbFreshCommand extends Command
 {
     public function __construct(
         private readonly KernelInterface $kernel,
@@ -26,7 +26,7 @@ class MigrateCommand extends Command
     {
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
-        // $application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
+        $application->run(new ArrayInput(['command' => 'doctrine:schema:drop', '--force' => true, '--full-database' => 'true']));
 
         $metaData = $this->entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($this->entityManager);

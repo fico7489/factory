@@ -12,13 +12,11 @@ class CreateOrderActionTest extends TestCase
         $product = $this->dataProvider->createProduct(10);
 
         $this->asUser($user);
-        $response = $this->client->request('POST', 'api/orders', [
-            'json' => [
-                'items' => [
-                    $product->getId() => 1,
-                ],
+        $response = $this->request('POST', '/api/orders', [
+            'items' => [
+                $product->getId() => 1,
             ],
-        ]);
+        ], 'Create order');
 
         $this->assertEquals(10, $response->toArray()['data']['attributes']['subtotal']);
     }

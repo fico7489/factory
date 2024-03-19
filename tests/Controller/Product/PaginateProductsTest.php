@@ -17,21 +17,20 @@ class PaginateProductsTest extends TestCase
 
         list($product, $categoryOne, $categoryOneOne, $categoryTwo) = $this->prepareProducts();
 
-        $response = $this->client->request('GET', '/api/products/'.$product->getId());
+        $response = $this->request('GET', '/api/products/'.$product->getId(), [], 'Get one product');
         $this->assertEquals('/api/products/'.$product->getId(), $response->toArray()['data']['id']);
 
-        $response = $this->client->request('GET', '/api/products');
-
+        $response = $this->request('GET', '/api/products', [], 'Get all products');
         $this->assertEquals(10, count($response->toArray()['data']));
         $this->assertEquals(25, $response->toArray()['meta']['totalItems']);
 
-        $response = $this->client->request('GET', '/api/category/'.$categoryOne->getId().'/products/');
+        $response = $this->request('GET', '/api/category/'.$categoryOne->getId().'/products/', [], 'Get product by category one');
         $this->assertEquals(2, count($response->toArray()['data']));
 
-        $response = $this->client->request('GET', '/api/category/'.$categoryOneOne->getId().'/products/');
+        $response = $this->request('GET', '/api/category/'.$categoryOneOne->getId().'/products/', [], 'Get product by category one_one');
         $this->assertEquals(1, count($response->toArray()['data']));
 
-        $response = $this->client->request('GET', '/api/category/'.$categoryTwo->getId().'/products/');
+        $response = $this->request('GET', '/api/category/'.$categoryTwo->getId().'/products/', [], 'Get product by category two');
         $this->assertEquals(2, count($response->toArray()['data']));
     }
 

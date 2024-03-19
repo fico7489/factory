@@ -14,67 +14,56 @@ class PaginateV2ProductsTest extends TestCase
     {
         list($userFirst, $userSecond, $userThird, $productFirst, $productSecond, $categoryOneOne) = $this->prepareProducts();
 
-        // test matching price_adjusted, 100 for third user
         $this->asUser($userThird);
-        $response = $this->client->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc');
+        $response = $this->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc', [], 'Test matching price_adjusted, 100 for third user');
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(100, $data['priceAdjusted']);
 
-        // test matching price_adjusted, 99 for second user
         $this->asUser($userSecond);
-        $response = $this->client->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc');
+        $response = $this->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc', [], 'Test matching price_adjusted, 99 for second user');
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(99, $data['priceAdjusted']);
 
-        // test matching price_adjusted, 98 for first user
         $this->asUser($userFirst);
-        $response = $this->client->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc');
+        $response = $this->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc', [], 'Test matching price_adjusted, 98 for first user');
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(98, $data['priceAdjusted']);
 
-        // test sorting by price -> asc
         $this->asUser($userFirst);
-        $response = $this->client->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc');
+        $response = $this->request('GET', '/api/v2/products?sorts[][price_adjusted]=asc', [], 'Test sorting by price -> asc');
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(98, $data['priceAdjusted']);
         $this->assertEquals($productFirst->getId(), $data['_id']);
 
-        // test sorting by price -> desc
         $this->asUser($userFirst);
-        $response = $this->client->request('GET', '/api/v2/products?sorts[][price_adjusted]=desc');
+        $response = $this->request('GET', '/api/v2/products?sorts[][price_adjusted]=desc', [], 'Test sorting by price -> desc');
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals(102, $data['priceAdjusted']);
         $this->assertEquals($productSecond->getId(), $data['_id']);
 
-        // test sorting by name -> asc
         $this->asUser($userFirst);
-        $response = $this->client->request('GET', '/api/v2/products?sorts[][name]=asc');
+        $response = $this->request('GET', '/api/v2/products?sorts[][name]=asc', [], 'Test sorting by name -> asc');
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals($productFirst->getId(), $data['_id']);
 
-        // test sorting by name -> desc
         $this->asUser($userFirst);
-        $response = $this->client->request('GET', '/api/v2/products?sorts[][name]=desc');
+        $response = $this->request('GET', '/api/v2/products?sorts[][name]=desc', [], 'Test sorting by name -> desc');
         $data = $response->toArray()['data'][0]['attributes'];
         $this->assertEquals($productSecond->getId(), $data['_id']);
 
-        // test filter -> default count
-        $response = $this->client->request('GET', '/api/v2/products');
+        $response = $this->request('GET', '/api/v2/products', [], 'Test filter -> all');
         $this->assertEquals(10, count($response->toArray()['data']));
 
-        // test filter -> by name
         $this->asUser($userFirst);
-        $response = $this->client->request('GET', '/api/v2/products?filters[][name][starts_with]=aaaa_Firs');
+        $response = $this->request('GET', '/api/v2/products?filters[][name][starts_with]=aaaa_Firs', [], 'Test filter -> by name');
         $this->assertEquals(1, count($response->toArray()['data']));
 
-        // test filter -> by category
         $this->asUser($userFirst);
-        $response = $this->client->request('GET', '/api/v2/products?filters[][category][equals]='.$categoryOneOne->getId());
+        $response = $this->request('GET', '/api/v2/products?filters[][category][equals]='.$categoryOneOne->getId(), [], 'Test filter -> by category');
         $this->assertEquals(2, count($response->toArray()['data']));
 
-        // test filter -> by price
         $this->asUser($userFirst);
-        $response = $this->client->request('GET', '/api/v2/products?filters[][price][lte]=99.2');
+        $response = $this->request('GET', '/api/v2/products?filters[][price][lte]=99.2', [], 'Test filter -> by price');
         $this->assertEquals(1, count($response->toArray()['data']));
     }
 

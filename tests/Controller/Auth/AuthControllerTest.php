@@ -16,21 +16,17 @@ class AuthControllerTest extends TestCase
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $response = $this->client->request('POST', '/api/login_check', [
-            'json' => [
-                'username' => 'example@example.com',
-                'password' => 'secret',
-            ],
-        ]);
+        $response = $this->request('POST', '/api/login_check', [
+            'username' => 'example@example.com',
+            'password' => 'secret',
+        ], 'Valid login');
         $this->assertResponseStatusCodeSame(200);
         $this->assertNotNull($response->toArray()['token']);
 
-        $response = $this->client->request('POST', '/api/login_check', [
-            'json' => [
-                'username' => 'example@example.com',
-                'password' => 'secret2',
-            ],
-        ]);
+        $response = $this->request('POST', '/api/login_check', [
+            'username' => 'example@example.com',
+            'password' => 'secret2',
+        ], 'Not valid login');
         $this->assertResponseStatusCodeSame(401);
     }
 }
