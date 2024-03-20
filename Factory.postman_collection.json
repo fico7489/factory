@@ -310,8 +310,11 @@
 				},
 				{
 					"name": "Show",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -338,24 +341,7 @@
 								}
 							}
 						},
-						"url": {
-							"raw": "http://localhost:5004/api/orders?include=orderItems",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5004",
-							"path": [
-								"api",
-								"orders"
-							],
-							"query": [
-								{
-									"key": "include",
-									"value": "orderItems"
-								}
-							]
-						}
+						"url": "http://localhost:5004/orders/1"
 					},
 					"response": []
 				}

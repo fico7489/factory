@@ -123,6 +123,7 @@ to sam za potrebe ovog zadatka napravio pomoću sql upita, iako bi ja to rađe s
 - Predzadnji korak je izračuna poreza, koji se računa iz taxBase koji je $this->getSubtotal() + $this->getDiscount();
 - Zadnji korak je računanje totala koji customer plaća
 - modifikatori za tax i discount mogu se dodati prema interfejsu.
+- Testni sirovi prikaz ordera se može vidjeti na: http://localhost:5004/orders/1
 
 Ako sam nešto zaboravio objasniti pitat ćete me na callu.
 
