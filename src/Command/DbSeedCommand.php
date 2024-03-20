@@ -220,7 +220,7 @@ class DbSeedCommand extends Command
         }
 
         $this->entityManager->flush();
-        // file_put_contents('.docker/mysql/data/product_contract_list.txt', $items);
+        // file_put_contents('var/mysql/product_contract_list.txt', $items);
 
         $bar->finish();
     }

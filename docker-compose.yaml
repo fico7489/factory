@@ -27,7 +27,6 @@ services:
             - db-data-factory:/var/lib/mysql
             - ./:/app
             - ./.docker/mysql/config/my.cnf:/etc/mysql/my.cnf
-            #- ./.docker/mysql/data:/var/data/
         ports:
             - "33308:3306"
 
