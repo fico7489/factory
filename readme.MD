@@ -8,7 +8,7 @@
 4. docker compose exec php sh
 5. composer install
 6. php bin/console lexik:jwt:generate-keypair
-7. php bin/console doctrine:migrations:migrate  --no-interaction
+7. php bin/console app:db:fresh
  - NOTE: on first docker up mysql needs 30-60 seconds to be ready
 8. php bin/console app:db:seed
 
