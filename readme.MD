@@ -12,7 +12,9 @@
  - NOTE: on first docker up mysql needs 30-60 seconds to be ready
 8. php bin/console app:db:seed
 
-YOU ARE READY! CHECK POSTMAN COLLECTION IN THE ROOT OF THE PROJECT! -> Factory.postman_collection.json
+YOU ARE READY! IMPORT POSTMAN COLLECTION IN THE ROOT OF THE PROJECT! -> Factory.postman_collection.json
+
+Login with any user, first user is "admin@example.com", all users have password "secret", then create environment and put token in TOKEN variable for the environment.
 
 ### Run tests
 
