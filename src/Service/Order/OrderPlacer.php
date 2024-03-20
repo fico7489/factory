@@ -23,9 +23,10 @@ class OrderPlacer
 
     public function placeOrder(User $user, Order $order, array $items): Order
     {
-        // create order
+        // attach user
         $order->setUser($user);
 
+        // store initial data like address
         $this->entityManager->persist($order);
         $this->entityManager->flush();
 

@@ -10,7 +10,7 @@ class PriceApplicator
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly OrderItemPriceFetcher $productPriceUserFetcher,
+        private readonly OrderItemPriceFetcher $orderItemPriceFetcher,
     ) {
     }
 
@@ -25,7 +25,7 @@ class PriceApplicator
                 $this->entityManager->refresh($orderItem);
             }
 
-            $productPriceUser = $this->productPriceUserFetcher->fetch($orderItem->getOrder()->getUser(), $orderItem->getProduct());
+            $productPriceUser = $this->orderItemPriceFetcher->fetch($orderItem->getOrder()->getUser(), $orderItem->getProduct());
             $productPriceUser->setOrderItem($orderItem);
             $this->entityManager->persist($productPriceUser);
             $this->entityManager->flush();

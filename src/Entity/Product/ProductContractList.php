@@ -27,7 +27,7 @@ class ProductContractList
     #[ORM\Column(type: 'string')]
     private ?string $sku = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'contractLists')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private User $user;
 
     public function getId(): ?int

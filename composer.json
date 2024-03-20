@@ -32,7 +32,7 @@
         "symfony/browser-kit": "7.*",
         "symfony/http-client": "7.*",
         "dama/doctrine-test-bundle": "*",
-        "jdorn/sql-formatter": "^1.2"
+        "jdorn/sql-formatter": "1.*"
     },
     "config": {
         "allow-plugins": {

@@ -22,8 +22,10 @@ class ProductsDataProviderSql implements DataProviderInterface
 
     public function count(array $filterData): int
     {
+        // get results
         $results = $this->getResults($filterData, 0, 0, true);
 
+        // fetch count
         $count = $results[0]['count(*)'] ?? 0;
 
         return $count;
@@ -31,11 +33,13 @@ class ProductsDataProviderSql implements DataProviderInterface
 
     public function entities(array $filterData, int $limit, int $offset): array
     {
+        // get results
         $results = $this->getResults($filterData, $limit, $offset, false);
 
+        // convert to entities
         $results = $this->resultsToEntitiesConverter->convert(Product::class, $results);
 
-        // set price_adjusted to entity
+        // set price_adjusted for each entity
         $products = [];
         foreach ($results as $result) {
             /* @var Product $product */
@@ -60,6 +64,7 @@ class ProductsDataProviderSql implements DataProviderInterface
         // prepare limit offset
         $sqlLimitOffset = ' LIMIT '.$limit.' OFFSET '.$offset.' ';
         if ($count) {
+            // for pagination count take all
             $sqlLimitOffset = '';
         }
 
@@ -88,6 +93,7 @@ class ProductsDataProviderSql implements DataProviderInterface
         ';
 
         if ($count) {
+            // for pagination count fetch count
             $sql = ' SELECT count(*) FROM ('.$sql.') as count ';
         }
 

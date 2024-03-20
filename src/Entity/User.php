@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use App\Entity\Product\ProductContractList;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -40,16 +39,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: UserGroup::class)]
     private Collection $userGroups;
 
-    #[ORM\OneToMany(targetEntity: ProductContractList::class, mappedBy: 'user')]
-    private Collection $contractLists;
-
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
     private Collection $orders;
 
     public function __construct()
     {
         $this->userGroups = new ArrayCollection();
-        $this->contractLists = new ArrayCollection();
         $this->orders = new ArrayCollection();
     }
 
@@ -120,16 +115,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserGroups(Collection $userGroups): void
     {
         $this->userGroups = $userGroups;
-    }
-
-    public function getContractLists(): Collection
-    {
-        return $this->contractLists;
-    }
-
-    public function setContractLists(Collection $contractLists): void
-    {
-        $this->contractLists = $contractLists;
     }
 
     public function getOrders(): Collection

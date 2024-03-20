@@ -95,7 +95,6 @@ class DbSeedCommand extends Command
         $users[] = $this->dataProvider->createUser([$userGroupGold], 'gold@example.com', false);
         $users[] = $this->dataProvider->createUser([$userGroupRepairman, $userGroupGold], 'gold_and_repairman@example.com', false);
 
-        // create 1000 users
         $io->writeln("\n".'Users');
         $bar = $io->createProgressBar($count);
 
@@ -195,7 +194,6 @@ class DbSeedCommand extends Command
     {
         $count = count($userIds) * count($productSkus);
 
-        // create 1000 users
         $io->writeln("\n".'Contract Lists');
         $bar = $io->createProgressBar($count);
 
@@ -214,7 +212,7 @@ class DbSeedCommand extends Command
 
                 /* @var Product $product */
 
-                // $this->dataProvider->createContractList($user, $productSku, $this->randPrice(), false);
+                $this->dataProvider->createContractList($user, $productSku, $this->randPrice(), false);
                 $items .= $i++.','.$userId.','.$this->randPrice().','.$productSku."\n";
 
                 $bar->advance();
@@ -222,7 +220,6 @@ class DbSeedCommand extends Command
         }
 
         $this->entityManager->flush();
-
         file_put_contents('.docker/mysql/data/product_contract_list.txt', $items);
 
         $bar->finish();
