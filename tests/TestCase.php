@@ -93,6 +93,7 @@ class TestCase extends ApiTestCase
 
         $curl = 'curl --location --request '.$method.' '.$parameterBag->get('api_url').$url.
             " --header 'Content-Type: application/json' ".
+            " --header 'Accept: application/vnd.api+json' ".
             " --header 'Authorization: Bearer ".self::$jwtToken."' ".
             ' --data '."'".json_encode($json)."'";
 
