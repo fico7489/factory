@@ -116,9 +116,9 @@ to sam za potrebe ovog zadatka napravio pomoću sql upita, iako bi ja to rađe s
 - Popusti su tako razdijeljeni jer ponekad se globalni popust prikazati posebno negdje na računu 
 - Ako se primijeni globalni porez on se razdijeli na sve order iteme i tamo spremi, a ne na samom order 
 - Isto tako se radi sa porezima, jer se može desiti da neki porez ide samo na pojedine kategorije proizvoda 
-- U aplikacijie je dodan jedan globalni popust koji daje 10$ ako subtotal premašuje 100$ i jedan per item koji daje 10% na monitor kategorije proizvoda
+- U aplikaciji je dodan jedan globalni popust koji daje 10$ ako subtotal premašuje 100$ i jedan per item koji daje 10% na monitor kategorije proizvoda
 - Oba dva poreza se zbrajaju u getteru getDiscount()
-- Predzadnji korak je izračuna poreza, koji se račune iz taxBase koji je $this->getSubtotal() + $this->getDiscount();
+- Predzadnji korak je izračuna poreza, koji se računa iz taxBase koji je $this->getSubtotal() + $this->getDiscount();
 - Zadnji korak je računanje totala koji customer plaća
 - modifikatori za tax i discount mogu se dodati prema interfejsu.
 
